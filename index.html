@@ -354,8 +354,10 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
   const KEY='war-barometer-v7';
   let state = {vals:IND.map(()=>0), notes:IND.map(()=>''), hist:[], seed:''};
   try{ const raw=localStorage.getItem(KEY); if(raw){ const o=JSON.parse(raw); if(o&&o.vals&&o.vals.length===IND.length){state=Object.assign(state,o);} } }catch(e){}
-  if(state.seed!==SEED.date){
-    state.vals=SEED.vals.slice(); state.notes=SEED.notes.slice(); state.seed=SEED.date;
+  // signature of the published assessment: date + content, so a republish on the same day still refreshes viewers
+  const SEEDSIG = (function(){ let h=0; const t=SEED.date+'|'+SEED.vals.join(',')+'|'+SEED.notes.join('\n'); for(let i=0;i<t.length;i++){ h=(h*31+t.charCodeAt(i))|0; } return SEED.date+'#'+(h>>>0).toString(36); })();
+  if(state.seed!==SEEDSIG){
+    state.vals=SEED.vals.slice(); state.notes=SEED.notes.slice(); state.seed=SEEDSIG;
     SEED.hist.forEach(h=>{ if(!state.hist.some(x=>x.d===h.d)) state.hist.push(h); });
     state.hist.sort((a,b)=>a.d<b.d?-1:1);
     try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
