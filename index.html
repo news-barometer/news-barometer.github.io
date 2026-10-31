@@ -211,14 +211,14 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
       <h2 id="i-title">Индикаторы и основания</h2>
       <p class="small muted" style="margin-top:4px">23 индикатора в четырёх группах. Под каждым — факт, на котором держится отметка.</p>
     </div>
-    <button class="btn" id="toggle-edit" type="button">Править</button>
+    <button class="btn" id="toggle-edit" type="button">Проверить свои отметки</button>
   </div>
-  <p class="small muted edit-only">Режим правки: отметки и заметки сохраняются только в этом браузере и действуют до следующей опубликованной оценки.</p>
+  <p class="small muted edit-only">Это ваш личный расчёт: отметки сохраняются только в этом браузере, на опубликованную оценку и на других читателей не влияют. Кнопка «Вернуть оценку» возвращает официальные значения.</p>
   <div id="inds"></div>
 </section>
 
 <section class="card edit-only" aria-labelledby="c-title">
-  <h2 id="c-title">Снимок</h2>
+  <h2 id="c-title">Личный снимок</h2>
   <div class="row" style="margin-top:8px">
     <label for="date" class="small muted">Дата</label>
     <input type="date" id="date">
@@ -428,7 +428,7 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
   });
   $('toggle-edit').addEventListener('click',()=>{
     const on=document.body.classList.toggle('editing');
-    $('toggle-edit').textContent=on?'Готово':'Править';
+    $('toggle-edit').textContent=on?'Готово':'Проверить свои отметки';
   });
 
   // scenarios
