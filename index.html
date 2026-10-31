@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Барометр войны</title>
+<meta name="description" content="Открытый монитор: куда идёт война России и Украины. Четыре возможных исхода до 2028 года и 23 наблюдаемых индикатора, обновление раз в две недели.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: one reading column; masthead → verdict panel (the one bold element) → outcomes → how to read → evidence by indicator → trend → method */
+  --bg:#edeff2; --surface:#ffffff; --ink:#171c24; --muted:#5b6673; --line:#d3d9e0; --soft:#f4f6f8;
+  --accent:#b8720f; --accent-ink:#ffffff;
+  --scA:#4b6d92; --scB:#1a8a78; --scC:#c4551a; --scD:#3e8d3c;
+  --alert:#b3261e; --alert-bg:#fbe9e7;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161c; --surface:#1a2029; --ink:#e9edf1; --muted:#9aa6b3; --line:#2c3541; --soft:#20272f;
+    --accent:#e0a040; --accent-ink:#141414;
+    --scA:#7f9fc4; --scB:#3cc0a8; --scC:#f08a4f; --scD:#6fc06a;
+    --alert:#ff6b5e; --alert-bg:#3a1f1c;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161c; --surface:#1a2029; --ink:#e9edf1; --muted:#9aa6b3; --line:#2c3541; --soft:#20272f;
+  --accent:#e0a040; --accent-ink:#141414;
+  --scA:#7f9fc4; --scB:#3cc0a8; --scC:#f08a4f; --scD:#6fc06a;
+  --alert:#ff6b5e; --alert-bg:#3a1f1c;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;padding:20px 16px 56px;max-width:720px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.05}
+h1{font-size:46px;font-weight:700;letter-spacing:.005em}
+h2{font-size:15px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+h3{font-size:22px;font-weight:600}
+p{margin:0}
+a{color:inherit}
+.eyebrow{font-family:var(--display);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--accent)}
+.dek{font-size:18px;line-height:1.4;margin-top:10px;max-width:60ch}
+.meta{font-family:var(--display);font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:12px;display:flex;gap:14px;flex-wrap:wrap}
+.meta b{color:var(--ink);font-weight:600}
+header{padding-bottom:18px;border-bottom:2px solid var(--ink);margin-bottom:18px}
+.stack{display:flex;flex-direction:column;gap:18px}
+section{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.num{font-family:var(--display);font-variant-numeric:tabular-nums;font-weight:600}
+
+/* verdict panel: the one bold element */
+.verdict{background:var(--ink);color:var(--bg);border-radius:6px;padding:20px 18px 18px;position:relative;overflow:hidden}
+.verdict::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--accent)}
+.verdict .eyebrow{color:var(--accent)}
+.verdict .headline{font-family:var(--display);font-size:34px;font-weight:700;line-height:1.05;margin-top:8px;text-wrap:balance}
+.verdict .sub{font-size:15px;line-height:1.45;margin-top:8px;opacity:.85;max-width:58ch}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.tile{border:1px solid rgba(255,255,255,.18);border-radius:4px;padding:10px 10px 8px;min-width:0}
+.tile .pct{font-family:var(--display);font-size:38px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.tile .nm{font-family:var(--display);font-size:14px;letter-spacing:.03em;text-transform:uppercase;margin-top:4px;line-height:1.15;opacity:.9}
+.tile .stripe{height:4px;border-radius:2px;margin-bottom:8px}
+.gauge{margin-top:18px}
+.gauge-labels{display:flex;justify-content:space-between;font-family:var(--display);font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.track{position:relative;height:12px;border-radius:6px;margin:8px 0 6px;background:linear-gradient(90deg,var(--scB) 0%,rgba(255,255,255,.35) 50%,var(--scC) 100%)}
+.track .tick{position:absolute;top:-4px;left:50%;width:2px;height:20px;background:var(--bg);opacity:.6;transform:translateX(-50%)}
+.needle{position:absolute;top:-7px;width:4px;height:26px;background:var(--accent);border-radius:2px;left:50%;transform:translateX(-50%);transition:left .4s ease}
+.needle::after{content:"";position:absolute;left:50%;top:-8px;transform:translateX(-50%);border:6px solid transparent;border-top:8px solid var(--accent)}
+.gauge-read{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:8px;flex-wrap:wrap}
+.gauge-read .val{font-family:var(--display);font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.gauge-read .expl{font-size:14px;opacity:.85}
+.flag{display:flex;gap:10px;align-items:flex-start;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.18);font-size:14.5px;line-height:1.4}
+.flag .lamp{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3);flex:none;margin-top:5px;box-shadow:0 0 0 3px rgba(255,255,255,.08)}
+.flag.warn .lamp{background:var(--accent)}
+.flag.on .lamp{background:var(--alert);box-shadow:0 0 0 4px rgba(255,80,60,.3)}
+
+/* outcomes */
+.sc{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:baseline;padding:12px 0;border-top:1px solid var(--line)}
+.sc:first-child{border-top:0;padding-top:4px}
+.sc .mark{width:10px;height:10px;border-radius:2px;align-self:center}
+.sc .nm{font-family:var(--display);font-size:20px;font-weight:600;line-height:1.1}
+.sc .ds{grid-column:2;font-size:14.5px;color:var(--muted);line-height:1.4}
+.sc .pct{font-family:var(--display);font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right;line-height:1}
+.sc .base{grid-column:3;font-size:12.5px;color:var(--muted);text-align:right;font-family:var(--display);letter-spacing:.04em;text-transform:uppercase}
+.sc .bar{grid-column:2/4;height:7px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:4px}
+.sc .bar i{display:block;height:100%;border-radius:4px;transition:width .4s ease}
+.A .mark,.A .bar i{background:var(--scA)} .B .mark,.B .bar i{background:var(--scB)} .C .mark,.C .bar i{background:var(--scC)}
+.D .mark,.D .bar i{background:var(--scD)}
+
+/* analysis */
+.analysis{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+.analysis h3{font-size:17px;margin-top:4px}
+.grp{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:baseline;font-size:14.5px}
+.grp .gb{grid-column:1/-1;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.grp .gb i{display:block;height:100%;background:var(--accent)}
+.analysis p{font-size:15px;line-height:1.5}
+.analysis ul{margin:0;padding-left:18px;font-size:14.5px;line-height:1.5}
+/* how to read */
+.howto{display:grid;grid-template-columns:1fr;gap:12px}
+.howto div{padding-left:14px;border-left:3px solid var(--accent);font-size:15px;line-height:1.45}
+.howto b{font-family:var(--display);font-size:17px;font-weight:600;display:block;margin-bottom:2px}
+
+/* indicators */
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.btn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-family:var(--display);font-size:15px;letter-spacing:.04em;text-transform:uppercase;padding:8px 14px;border-radius:4px;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.group-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:10px 0 2px;flex-wrap:wrap}
+.group-head .dir{font-family:var(--display);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.group-desc{font-size:14px;color:var(--muted);margin-bottom:6px;line-height:1.4}
+.ind{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;padding:12px 0;border-top:1px solid var(--line);align-items:start}
+.pill{font-family:var(--display);font-size:13px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;padding:3px 8px;border-radius:3px;border:1px solid var(--line);color:var(--muted);white-space:nowrap;margin-top:2px;min-width:86px;text-align:center}
+.pill.v1{border-color:var(--accent);color:var(--accent)}
+.pill.v2{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ind .t{font-size:15.5px;line-height:1.4}
+.ind .t .nm{display:block;font-family:var(--display);font-size:19px;font-weight:600;line-height:1.15}
+.ind .t .full{display:block;color:var(--muted);font-size:13.5px;margin-top:2px;line-height:1.4}
+.ind .ev{grid-column:2;font-size:14px;color:var(--ink);line-height:1.4;font-style:italic}
+.ind .ev:empty{display:none}
+.ind .ev::before{content:"Основание: ";font-style:normal;color:var(--muted);font-family:var(--display);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase}
+body:not(.editing) .edit-only{display:none}
+body.editing .ro-only{display:none}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:4px;overflow:hidden;grid-column:2}
+.seg button{appearance:none;border:0;background:transparent;color:var(--muted);font-family:var(--display);font-size:14px;letter-spacing:.04em;text-transform:uppercase;padding:8px 4px;cursor:pointer;border-left:1px solid var(--line)}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.note{grid-column:2;width:100%;border:1px solid var(--line);border-radius:4px;background:transparent;color:var(--ink);font:inherit;font-size:14px;padding:6px 8px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input[type="date"]{border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);font:inherit;font-size:14px;padding:7px 10px}
+.msg{font-size:14px;color:var(--muted);min-height:18px}
+
+/* history */
+.hist{display:grid;grid-template-columns:auto 1fr auto;gap:8px 12px;font-size:14px;align-items:center}
+.hist .d{color:var(--muted);font-family:var(--display);letter-spacing:.04em}
+.hist .mini{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--scB),var(--line) 50%,var(--scC));position:relative;opacity:.9}
+.hist .mini i{position:absolute;top:-4px;width:3px;height:14px;background:var(--ink);border-radius:2px;transform:translateX(-50%)}
+.hist .lead-s{text-align:right;font-family:var(--display);font-size:15px}
+.empty{color:var(--muted);font-size:14px}
+
+/* method */
+details{border-top:1px solid var(--line);padding:10px 0}
+summary{cursor:pointer;font-family:var(--display);font-size:18px;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::after{content:"+";font-size:22px;color:var(--muted)}
+details[open] summary::after{content:"–"}
+details p{margin-top:8px;font-size:15px;line-height:1.5;max-width:62ch}
+details p+p{margin-top:8px}
+footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-size:14px;color:var(--muted);line-height:1.5}
+@media (max-width:420px){
+  h1{font-size:40px}
+  .verdict .headline{font-size:29px}
+  .tiles{grid-template-columns:1fr 1fr}
+  .tile:nth-child(3){grid-column:1/-1}
+}
+@media (prefers-reduced-motion: reduce){.needle,.sc .bar i{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Открытый монитор · обновляется по понедельникам</div>
+  <h1>Барометр войны</h1>
+  <p class="dek">Куда идёт война России и Украины. Четыре возможных исхода на горизонте до 2028 года и 23 наблюдаемых индикатора, по которым видно, какой из них сейчас ближе.</p>
+  <div class="meta"><span>Оценка от <b id="seed-date">—</b></span><span>Следующая: <b id="next-date">—</b></span><span>Источники: открытые СМИ и официальные заявления</span></div>
+</header>
+
+<div class="stack">
+
+<section class="verdict" aria-labelledby="v-title">
+  <div class="eyebrow" id="v-title">Показание сейчас</div>
+  <div class="headline" id="headline">—</div>
+  <p class="sub" id="headline-sub"></p>
+  <div class="tiles" id="tiles"></div>
+  <div class="gauge">
+    <div class="gauge-labels"><span>К сделке</span><span>К продолжению войны</span></div>
+    <div class="track"><div class="tick"></div><div class="needle" id="needle"></div></div>
+    <div class="gauge-read"><span class="val" id="needle-val">0</span><span class="expl">Стрелка: перевес «военных» сигналов над «сделочными», от −100 до +100. Ноль — поровну.</span></div>
+  </div>
+  <div class="flag" id="nato"><span class="lamp"></span><span id="nato-text"></span></div>
+</section>
+
+<section class="card" aria-labelledby="s-title">
+  <h2 id="s-title">Четыре исхода и их вероятность к 2028 году</h2>
+  <p class="small muted">Отсортированы по текущей оценке. «База» — стартовая вероятность до учёта индикаторов.</p>
+  <div id="scen"></div>
+</section>
+
+<section class="card" aria-labelledby="a-title">
+  <h2 id="a-title">Разбор</h2>
+  <p class="small muted">Собирается автоматически из отметок: сила каждой группы, что изменилось с прошлой оценки и как это читается через теории окончания войн.</p>
+  <div id="analysis" class="analysis"></div>
+</section>
+
+<section class="card" aria-labelledby="h-title">
+  <h2 id="h-title">Как читать</h2>
+  <div class="howto">
+    <div><b>Индикатор</b>Наблюдаемое событие, которое обычно предшествует одному из исходов. У каждого три состояния: нет, частично, да.</div>
+    <div><b>Вероятность</b>Каждая отметка «да» или «частично» сдвигает вероятности исходов на заданный вес. Веса заданы заранее и не меняются от оценки к оценке.</div>
+    <div><b>Не прогноз</b>Это структурированное наблюдение: оно показывает, в какую сторону накапливаются факты, а не предсказывает дату или результат.</div>
+  </div>
+</section>
+
+<section class="card" aria-labelledby="i-title">
+  <div class="sec-head">
+    <div>
+      <h2 id="i-title">Индикаторы и основания</h2>
+      <p class="small muted" style="margin-top:4px">23 индикатора в четырёх группах. Под каждым — факт, на котором держится отметка.</p>
+    </div>
+    <button class="btn" id="toggle-edit" type="button">Править</button>
+  </div>
+  <p class="small muted edit-only">Режим правки: отметки и заметки сохраняются только в этом браузере и действуют до следующей опубликованной оценки.</p>
+  <div id="inds"></div>
+</section>
+
+<section class="card edit-only" aria-labelledby="c-title">
+  <h2 id="c-title">Снимок</h2>
+  <div class="row" style="margin-top:8px">
+    <label for="date" class="small muted">Дата</label>
+    <input type="date" id="date">
+    <button class="btn primary" id="save" type="button">Сохранить снимок</button>
+    <button class="btn" id="copy" type="button">Скопировать сводку</button>
+    <button class="btn" id="reset" type="button">Вернуть оценку</button>
+  </div>
+  <p class="msg" id="msg"></p>
+</section>
+
+<section class="card" aria-labelledby="t-title">
+  <h2 id="t-title">Динамика</h2>
+  <p class="small muted">Положение стрелки и лидирующий исход на каждую дату оценки.</p>
+  <div id="hist"></div>
+</section>
+
+<section class="card" aria-labelledby="m-title">
+  <h2 id="m-title">Метод и ограничения</h2>
+  <details>
+    <summary>Как считаются вероятности</summary>
+    <p>У каждого исхода есть базовая вероятность: грязная заморозка 38 %, оформленная заморозка 32 %, долгая война 24 %, мирный договор 6 %. Базы сверены со статистикой окончания межгосударственных войн (UCDP, 1946–2005: перемирие 33 %, мирное соглашение 16 %, затухание без урегулирования 21 %) и с рынками прогнозов на конец 2027–2028 года. Поражение одной из сторон не выделено в отдельный исход: на практике оно оформляется тем же договором или заморозкой, только на других условиях, поэтому его предвестники распределены по группам. Каждый индикатор несёт набор весов: какие исходы он делает вероятнее, какие — менее вероятными. Отметка «да» применяет вес полностью, «частично» — наполовину. Результат нормируется так, чтобы четыре исхода в сумме давали 100 %.</p>
+    <p>Веса приглушены: даже все индикаторы одной группы на «да» не поднимают исход выше примерно 80–85 %. Это сделано намеренно, чтобы пара новостей не переворачивала картину.</p>
+  </details>
+  <details>
+    <summary>Что такое стрелка и флаг НАТО</summary>
+    <p>Стрелка сравнивает две группы: индикаторы, которые тянут к продолжению войны, и индикаторы, которые тянут к сделке. Это разность их средних отметок, от −100 до +100.</p>
+    <p>Флаг НАТО — отдельный сигнал риска прямого столкновения России и альянса. Его питают инциденты над Польшей и Балтией, удары по судоходству у берегов Румынии и Болгарии, нерутинные учения, зимние удары по энергетике и названные даты ввода европейских войск в Украину (этот индикатор стоит в группе заморозки, но риск столкновения тоже поднимает). Он загорается, когда эти сигналы набирают больше половины возможного веса.</p>
+  </details>
+  <details>
+    <summary>Откуда данные и кто ставит отметки</summary>
+    <p>Отметки выставляет ИИ-ассистент Claude каждый понедельник по открытым источникам: новостные агентства, издания обеих сторон, официальные заявления, трекеры помощи и потерь. Цифры, которые называет только одна сторона конфликта, помечаются как её оценка. Список индикаторов, базовые вероятности и веса задал автор барометра.</p>
+  </details>
+  <details>
+    <summary>На какие исследования опирается набор индикаторов</summary>
+    <p>Информационная теория окончания войн (Fearon, Reiter): война идёт, пока стороны расходятся в оценке своих шансов; новые результаты на поле боя сближают оценки, застой — нет. Отсюда индикатор «Застой на фронте» и «Баланс сил по тренду».</p>
+    <p>Теория созревания (Zartman): переговоры начинаются при взаимно болезненном тупике и видимом выходе; тупик измеряется трендом издержек за месяцы, а не моментом. Отсюда экономические индикаторы, выплаты, перемирия и переговоры как «выход».</p>
+    <p>Внутренняя политика (Goemans, Stanley): лидеры, которым грозит наказание за проигрыш, воюют дольше; войны заканчиваются сдвигом внутренней коалиции. Отсюда «Борьба элит», «Здоровье Путина», «Коалиция за остановку», «Выборы в Украине».</p>
+    <p>Прочность перемирий (Fortna, Werner & Yuen): демилитаризованные зоны, гарантии третьих сторон и миротворцы удлиняют мир; перемирия под давлением третьей стороны и сдвиг соотношения сил его ломают. Отсюда «Гарантии безопасности», «Европейские войска», «Санкции и давление США» и разделение на грязную и оформленную заморозку.</p>
+  </details>
+  <details>
+    <summary>Источники данных и защита от дезинформации</summary>
+    <p><b>Правила.</b> Событие засчитывается только по первичному документу или двум независимым агентствам. Спорная цифра — минимум два источника с разных сторон, иначе в основании стоит «по данным X». Заявление и событие — разные вещи: в основание идёт событие. Telegram-каналы, видеоблоги и «инсайды» основанием не являются. У каждой заметки — дата и источник.</p>
+    <p><b>Переговоры и гарантии:</b> стенограммы kremlin.ru, president.gov.ua, mid.ru, mfa.gov.ua, state.gov; Reuters, AP, AFP; Интерфакс (российская и украинская редакции для сравнения). Утечки Bloomberg, FT, WSJ, Axios — только как «по данным источников издания».</p>
+    <p><b>Экономика России:</b> Минфин РФ (бюджет, ФНБ), ЦБ РФ, Росстат; BOFIT (Банк Финляндии); CREA (доходы от экспорта энергоносителей); Re:Russia и расчёты Яниса Клюге (SWP) по региональным бюджетам; цена Urals по расчётам Reuters и Argus.</p>
+    <p><b>Фронт и баланс сил:</b> DeepState (украинский проект, пометка) и ISW (США) — расхождение между ними само по себе сигнал; потери по именам — «Медиазона» и BBC; техника — Oryx и WarSpotting; квартальные оценки — IISS, RUSI, CSIS, SIPRI; энергетика Украины — Укрэнерго, ДТЭК, Минэнерго.</p>
+    <p><b>Помощь Украине:</b> Kiel Ukraine Support Tracker; решения Совета ЕС; пресс-релизы правительств.</p>
+    <p><b>НАТО, Балтика, Чёрное море, учения:</b> nato.int, SHAPE; минобороны Польши, Румынии, Болгарии, Литвы, Эстонии; Stars and Stripes (жизнь американских баз); Lloyd's Joint War Committee и Lloyd's List (страховщики); Conflict Intelligence Team и Bellingcat (спутниковая проверка); для Германии — Bundeswehr, Verfassungsschutz, BBK.</p>
+    <p><b>Элиты и здоровье:</b> публичный график на kremlin.ru — единственная проверяемая опора; указы — publication.pravo.gov.ru; аналитика элит — Faridaily, «Верстка», The Bell, R.Politik (независимые, с пометкой).</p>
+    <p><b>Общество и выборы:</b> Левада-центр, «Хроники», ExtremeScan (в автократии опросы показывают динамику, а не уровень); ВЦИОМ — только для сравнения; КМИС, «Рейтинг», Центр Разумкова; rada.gov.ua и ЦИК Украины.</p>
+    <p><b>Сверка:</b> Metaculus и Polymarket — не источник фактов, а проверка, не разошёлся ли барометр с коллективной оценкой.</p>
+  </details>
+  <details>
+    <summary>Ограничения</summary>
+    <p>Веса субъективны, хоть и зафиксированы. Часть индикаторов опирается на заявления, а не на проверяемые факты. Горизонт — до 2028 года; события за его пределами не оцениваются. Барометр не учитывает «чёрных лебедей»: внезапных событий, у которых нет предвестников в списке.</p>
+  </details>
+</section>
+
+</div>
+
+<footer>Страница живёт по постоянной ссылке и перезаписывается при каждой оценке. Прошлые показания — в разделе «Динамика».</footer>
+
+<script>
+(function(){
+  // scenarios: A dirty freeze, B formal freeze (Korea), C long war / escalation, D peace treaty
+  const SC = [
+    {k:'A', name:'Грязная заморозка', desc:'Стрельба стихает по линии фронта, но ничего не подписано: ни границ, ни гарантий. Приднестровский вариант с постоянным риском рецидива.', base:38},
+    {k:'B', name:'Оформленная заморозка', desc:'Зафиксированная линия, полоса разведения, гарантии Украине, статус территорий не признан. Корейский вариант.', base:32},
+    {k:'C', name:'Долгая война', desc:'Активные боевые действия продолжаются ещё три года и больше, с растущим риском втягивания НАТО.', base:24},
+    {k:'D', name:'Мирный договор', desc:'Полноценное соглашение: границы и статус закреплены юридически — на чьих бы условиях оно ни было. Требует перелома: военного, политического или внутреннего кризиса у одной из сторон.', base:6}
+  ];
+  const GROUPS = {
+    'К заморозке':'Сигналы, что стороны готовы остановиться без победы.',
+    'К долгой войне':'Сигналы, что стороны и их союзники рассчитывают на годы, а не на сделку.',
+    'К эскалации с НАТО':'Сигналы риска прямого столкновения с альянсом. Питают флаг НАТО.',
+    'К договору':'Сигналы, что появляется политическая возможность для полноценного соглашения, включая внутренний кризис у одной из сторон.'
+  };
+  // effect = log-odds shift at "да"; "частично" gives half
+  const IND = [
+    {n:'Переговоры', g:'К заморозке', t:'Переговоры продолжаются: прошёл второй и третий раунд', s:'сам факт продолжения важнее содержания', e:{A:.3,B:.6,C:-.5,D:.3}, side:-1},
+    {n:'Территориальные уступки', g:'К заморозке', t:'Снято предусловие: Россия не требует оставшуюся часть Донбасса, или Киев не повторяет «ни метра»', s:'любой из двух сдвигов', e:{A:.1,B:.9,C:-.6,D:.6}, side:-1},
+    {n:'Перемирия', g:'К заморозке', t:'Частичные перемирия реально соблюдаются', s:'энергетика, море, локальные зоны; обмены пленными сами по себе не считаются — они идут всегда', e:{A:.6,B:.5,C:-.4,D:.2}, side:-1},
+    {n:'Гарантии безопасности для Украины', g:'К заморозке', t:'Гарантии безопасности обсуждаются в конкретике', s:'кто стоит на линии, кто платит, что при нарушении', e:{A:-.2,B:1,C:-.5,D:.5}, side:-1},
+    {n:'Европейские войска в Украине', g:'К заморозке', t:'Европейские войска в Украине: названы даты, не планы', s:'даты называют, когда перемирие уже согласовано; одновременно поднимает риск столкновения с Россией — учитывается во флаге НАТО', e:{A:-.1,B:.6,C:-.2,D:.2}, side:-1, nato:.5},
+    {n:'Экономика России', g:'К заморозке', t:'Пять измеримых признаков истощения', s:'1) Urals ниже цены отсечения $50 два месяца подряд; 2) дефицит федерального бюджета превышает годовой план более чем в 1,5 раза; 3) ликвидная часть ФНБ ниже 2 трлн ₽; 4) введены новые налоги или повышены ставки; 5) рост ВВП не выше нуля или ЦБ снова поднимает ключевую ставку. «Да» — три и больше, «частично» — один-два', e:{A:.4,B:.4,C:-.5,D:.3}, side:-1},
+    {n:'Выплаты российским военным', g:'К заморозке', t:'Регионы России режут или откладывают выплаты семьям погибших и контрактникам', s:'цена войны упирается в бюджет; сами потери не считаются — они совместимы и с наступлением', e:{A:.3,B:.3,C:-.4,D:.3}, side:-1},
+    {n:'Санкции и давление США', g:'К заморозке', t:'США давят на Москву делом, не словами', s:'новые санкции, вторичные пошлины покупателям нефти, поставки оружия; давление на Киев (ультиматумы, отключение Starlink) = «нет»', e:{A:.2,B:.6,C:-.5,D:.3}, side:-1},
+    {n:'Мобилизация в России', g:'К долгой войне', t:'Армия перестраивается под годы войны', s:'мобилизация, резкий рост выплат контрактникам, новые рода войск и командования, расширение военного производства', e:{A:-.3,B:-.4,C:.9,D:-.4}, side:1},
+    {n:'Застой на фронте', g:'К долгой войне', t:'Линия фронта почти не движется', s:'«да» — сдвиг меньше ~100 км² в месяц в обе стороны несколько месяцев подряд (DeepState, ISW); «нет» — заметный сдвиг в любую сторону. Исследования окончания войн: застой продлевает войну, а новые результаты на поле боя сближают оценки сторон и ускоряют сделку', e:{A:.1,B:-.3,C:.6,D:-.3}, side:1},
+    {n:'Поставки оружия Украине', g:'К долгой войне', t:'США фактически вышли, Европа не закрывает дыру', s:'ПВО и деньги', e:{A:.2,B:-.5,C:.8,D:-.3}, side:1},
+    {n:'Удары по энергетике Украины', g:'К долгой войне', t:'Удары по энергетике зимой усиливаются', s:'расчёт на принуждение, не на переговоры', e:{A:0,B:-.2,C:.4,D:0}, side:1, nato:.3},
+    {n:'Заявления о новых целях', g:'К долгой войне', t:'Риторика расширяется: Одесса, Харьков, «вся Новороссия»', s:'слова дешёвые, вес вдвое ниже остальных', e:{A:0,B:-.2,C:.35,D:-.2}, side:1},
+    {n:'Дезертирство в Украине', g:'К долгой войне', t:'Массовое дезертирство, срыв мобилизации в Украине', s:'слабеющий тыл продлевает войну и ухудшает условия сделки', e:{A:.4,B:-.3,C:.4,D:.1}, side:1},
+    {n:'Деньги Европы для Украины', g:'К долгой войне', t:'Европа отказывается финансировать Украину', s:'не «спорит о сумме», а не даёт', e:{A:.3,B:-.5,C:.6,D:.2}, side:1},
+    {n:'Баланс сил по тренду', g:'К долгой войне', t:'Соотношение сил меняется в пользу одной стороны', s:'квартальный тренд, не недельный: производство дронов и снарядов, набор против потерь, поставки. «Да» — одна сторона явно наращивает перевес и ждёт улучшения позиции, ей незачем договариваться; «нет» — паритет или обе буксуют. По Вернер именно сдвиг соотношения сил чаще всего ломает перемирия', e:{A:-.1,B:-.4,C:.6,D:-.2}, side:1},
+    {n:'Обстановка на Балтике', g:'К эскалации с НАТО', t:'Инциденты над Польшей и Балтией регулярнее, Россия их не отрицает', s:'', e:{A:0,B:-.3,C:.8,D:0}, side:1, nato:1},
+    {n:'Обстановка в Чёрном море', g:'К эскалации с НАТО', t:'Чёрное море: удары по судам у Румынии и Болгарии с жертвами', s:'порог — погибшие в территориальных водах НАТО или запрос статьи 4', e:{A:0,B:-.2,C:.6,D:0}, side:1, nato:.8},
+    {n:'Военные учения', g:'К эскалации с НАТО', t:'Учения выходят из рутины', s:'внезапные ядерные тренировки, перемещение боеголовок, войска не возвращаются после учений, отмены без объяснений', e:{B:-.2,C:.4}, side:1, nato:.6},
+    {n:'Борьба элит в Кремле', g:'К договору', t:'Политическая чистка или открытый конфликт элит в Кремле', s:'уровень министра обороны, Генштаба, Совбеза, ФСБ, публичная война кланов; оперативные перестановки в командовании не считаются', e:{A:0,B:.3,C:-.3,D:1}, side:-1},
+    {n:'Выборы в Украине', g:'К договору', t:'Украина готовит выборы или референдум по условиям', s:'значит, условия уже есть', e:{A:0,B:.5,C:-.5,D:1}, side:-1},
+    {n:'Здоровье Путина', g:'К договору', t:'Проверяемые сбои в работе Путина: исчезновение дольше двух недель, отменённые визиты и мероприятия', s:'слухи не считаются; смена власти — самый вероятный путь к договору', e:{A:0,B:.3,C:-.3,D:.8}, side:-1},
+    {n:'Коалиция за остановку', g:'К договору', t:'Внутри обеих стран растёт коалиция за прекращение войны', s:'опросы (Левада, ВЦИОМ — поддержка переговоров в России; КМИС — допустимость переговоров и уступок в Украине) и публичные голоса из околовластных кругов: бизнес, губернаторы, военные блогеры. По Стэнли и Гоэмансу войны заканчиваются сдвигом внутренней коалиции, а не только усталостью', e:{A:.2,B:.4,C:-.4,D:.5}, side:-1}
+  ];
+  // SEED: оценка Claude; при публикации новой оценки меняется только этот блок
+  const SEED = {
+    date:'2026-10-31',
+    vals:[1,0,1,1,0,1,1,0,1,2,1,2,2,1,0,1,1,1,1,0,1,0,1],
+    notes:[
+      'Уиткофф у Путина 21.10 и у Зеленского (Осло); Ушаков 29.10: 4-й раунд в Абу-Даби после 4.11 (Зеленский: 10.11); раунд ещё не прошёл',
+      'Путин 27.10 Стуббу/Стёре: мир по «реалиям на земле» = весь Донбасс; Зеленский 25–27.10: вывода с Донбасса не будет, заморозка только по линии',
+      'Локальное перемирие в Олешках 27.10–1.11 соблюдается; энергоперемирия нет; обмены (270/270 23.10) не считаются',
+      'Зеленский 27.10: три варианта (ст. 5 США / коалиция с бэкстопом / НАТО), выбор не сделан; учения UK–FR–DE–PL в ноябре (1500+); в утечке плана США — ДМЗ в Донбассе',
+      'Учения коалиции в Польше в ноябре — репетиция; даты ввода в Украину не названы, только после перемирия',
+      '2 из 5. Сработали: дефицит за 9 мес. 5,19 трлн ₽ (2,2% ВВП) при годовом плане 3,8 трлн (Минфин 9.10); НДС поднят с 20 до 22% с 2026. Не сработали: Urals в октябре выше $65 (расчёт Reuters); ликвидный ФНБ 4,0 трлн ₽, 1,7% ВВП (1.09). На грани: ВВП 2026 прогноз ЦБ 0,5–1%, I кв. −0,3% г/г, ставка 14% и снижается',
+      'Ставрополье 29.10 отложило выплаты семьям до 2027, Саратов срезал в 10 раз; ряд регионов сокращает бонусы за контракт',
+      'США продают, не дают: Patriot за счёт Канады/ФРГ/Норвегии; Starlink ограничен 14–24.10; Пентагон 30.10 просит союзников не «тыкать» Россию — давление скорее на Киев',
+      'Мобилизации нет; 56 регионов платят вербовщикам, бонусы до 1–2,1 млн; реорганизация 5.08: войска БпЛА, новые командования «Центр» и «Восток»',
+      'Застой: по DeepState +8 км² за 4 недели к 19.10 при 96 ранее, неделя 13–19.10 — минус 52 км²; ISW 27.10: подтверждённых продвижений нет; заявление Путина 16.10 о 6,5 тыс. км² с января не подтверждено',
+      'США продают, не дают: Patriot на $2,1 млрд 30.10 за счёт Канады/ФРГ/Норвегии; от США за 2026 — 24 перехватчика; Starlink ограничен 14–24.10; ЕС даёт (€90 млрд + Норвегия $9 млрд, UK $13 млрд)',
+      '19.10: 550 тыс. домохозяйств без света; 23.10: 500 тыс.; 30–31.10: ТЭЦ Киева, 200 тыс. семей в Днепре; NYT 15.10: план обесточить Киев, Харьков, Одессу за месяц',
+      'Путин 16.10: «массированные удары по всей территории», Луганская «полностью», Доброполье «взято» (не подтверждено); Одесса и Харьков — цели энергоплана (NYT)',
+      'Корецкий 21.10 анонсировал ужесточение за СЗЧ, Рада рассматривает (19.10); массового срыва мобилизации не видно',
+      'ЕС финансирует (€90 млрд); Зеленский 16.10 просит ещё €70 млрд на 2027 — спор о сумме, не отказ',
+      'Смешанно: Россия — цель 7 млн FPV в 2026, но набор, по данным украинских Сил беспилотных систем, пять месяцев подряд ниже потерь (односторонний источник); Украина — цель 7 млн дронов, перевес в дронах по оценке Kyiv Independent/ISW, но дефицит людей; IISS: Россия способна воевать весь 2026',
+      'Польша 16.10: нарушений нет; Ил-20 над Балтикой 28.10; дроны над Польшей в июне и сентябре; РФ не признаёт',
+      '7+ судов поражены в ИЭЗ Румынии и Болгарии, ~30 погибших/пропавших; Румыния сбила 2 дрона в своих водах 17.10; НАТО усиливает наблюдение; статья 4 не задействована',
+      'Учения ОДКБ в Беларуси 12–16.10 (1500 чел., без ядерной части) — плановые; внезапные ядерные РФ–РБ были в мае; НАТО — по календарю',
+      'Перестановки 5.08 — оперативные, не считаются; политической чистки и открытого конфликта элит нет; отчёт разведки об опасениях переворота (весна) — не подтверждён событиями',
+      'Зеленский 11.10: выборы при 60-дневном перемирии; 21.10 (Fox): любое соглашение — на референдум; дат и условий нет',
+      'Синяк на руке 1.09, Кремль отрицает болезнь; публичные мероприятия идут, отмен нет',
+      'Общество — да, элиты — нет: Левада, март 2026 — 64–67% за переговоры, 24% за продолжение (минимум с 2022); КМИС, сентябрь 2026 — 75% допускают переговоры, но в мае 61% против перемирия по линии без гарантий; публичных призывов остановиться из околовластных кругов РФ нет'
+    ],
+    hist:[{"d": "2026-10-31", "v": [1, 0, 1, 1, 0, 1, 1, 0, 1, 2, 1, 2, 2, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1]}]
+  };
+  const KEY='war-barometer-v7';
+  let state = {vals:IND.map(()=>0), notes:IND.map(()=>''), hist:[], seed:''};
+  try{ const raw=localStorage.getItem(KEY); if(raw){ const o=JSON.parse(raw); if(o&&o.vals&&o.vals.length===IND.length){state=Object.assign(state,o);} } }catch(e){}
+  if(state.seed!==SEED.date){
+    state.vals=SEED.vals.slice(); state.notes=SEED.notes.slice(); state.seed=SEED.date;
+    SEED.hist.forEach(h=>{ if(!state.hist.some(x=>x.d===h.d)) state.hist.push(h); });
+    state.hist.sort((a,b)=>a.d<b.d?-1:1);
+    try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
+  }
+  function persist(){ try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){} }
+
+  function compute(vals){
+    const lo = {}; SC.forEach(s=>lo[s.k]=Math.log(s.base/100));
+    let warSig=0, dealSig=0, warMax=0, dealMax=0, nato=0, natoMax=0, any=false;
+    IND.forEach((ind,i)=>{
+      const f = vals[i]/2; if(vals[i]>0) any=true;
+      for(const k in ind.e) lo[k]+=ind.e[k]*f*0.65; // damped so a few ticks do not swing the whole picture
+      if(ind.side>0){warSig+=f;warMax++;} else if(ind.side<0){dealSig+=f;dealMax++;}
+      if(ind.nato){nato+=ind.nato*f;natoMax+=ind.nato;}
+    });
+    const ex = SC.map(s=>Math.exp(lo[s.k])); const sum=ex.reduce((a,b)=>a+b,0);
+    const probs = {}; SC.forEach((s,i)=>probs[s.k]=Math.round(ex[i]/sum*100));
+    let drift = 100 - Object.values(probs).reduce((a,b)=>a+b,0);
+    if(drift){ const top=SC.slice().sort((a,b)=>probs[b.k]-probs[a.k])[0]; probs[top.k]+=drift; }
+    const needle = Math.round((warSig/warMax - dealSig/dealMax)*100);
+    const natoLvl = natoMax? nato/natoMax : 0;
+    return {probs, needle, natoLvl, any};
+  }
+  const fmt = d => d.split('-').reverse().join('.');
+  function isoWeek(x){ const d=new Date(Date.UTC(x.getFullYear(),x.getMonth(),x.getDate())); const day=d.getUTCDay()||7; d.setUTCDate(d.getUTCDate()+4-day); const y0=new Date(Date.UTC(d.getUTCFullYear(),0,1)); return Math.ceil(((d-y0)/864e5+1)/7); }
+  // next assessment: the first Monday after the seed date (weekly update cadence)
+  function nextDate(d){ const x=new Date(d+'T12:00:00'); for(let i=0;i<8;i++){ x.setDate(x.getDate()+1); if(x.getDay()===1) break; } return fmt(x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')); }
+
+  const $=id=>document.getElementById(id);
+  $('seed-date').textContent=fmt(SEED.date); $('next-date').textContent='около '+nextDate(SEED.date);
+
+  // indicators (read + edit markup in one row)
+  const indEl=$('inds'); let curG=null, gWrap=null;
+  IND.forEach((ind,i)=>{
+    if(ind.g!==curG){
+      curG=ind.g;
+      const head=document.createElement('div'); head.className='group-head';
+      head.innerHTML='<h3>'+curG+'</h3><span class="dir">'+(ind.side>0?'тянет стрелку вправо':'тянет стрелку влево')+'</span>';
+      indEl.appendChild(head);
+      const gd=document.createElement('p'); gd.className='group-desc'; gd.textContent=GROUPS[curG]||''; indEl.appendChild(gd);
+      gWrap=document.createElement('div'); indEl.appendChild(gWrap);
+    }
+    const row=document.createElement('div'); row.className='ind';
+    row.innerHTML='<span class="pill" id="pill-'+i+'"></span>'+
+      '<div class="t"><b class="nm">'+ind.n+'</b><span class="full">'+ind.t+(ind.s?' — '+ind.s:'')+'</span></div>'+
+      '<div class="ev ro-only" id="ev-'+i+'"></div>'+
+      '<div class="seg edit-only" role="group" aria-label="Оценка">'+
+        [['Нет',0],['Частично',1],['Да',2]].map(o=>'<button type="button" data-i="'+i+'" data-v="'+o[1]+'">'+o[0]+'</button>').join('')+
+      '</div>'+
+      '<input class="note edit-only" id="note-'+i+'" placeholder="Основание: что именно произошло, дата, источник">';
+    gWrap.appendChild(row);
+  });
+  const PILL=['Нет','Частично','Да'];
+  function paintInds(){
+    IND.forEach((ind,i)=>{
+      const v=state.vals[i];
+      const p=$('pill-'+i); p.textContent=PILL[v]; p.className='pill v'+v;
+      $('ev-'+i).textContent=state.notes[i]||'';
+      $('note-'+i).value=state.notes[i]||'';
+      document.querySelectorAll('button[data-i="'+i+'"]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.v===v)));
+    });
+  }
+  indEl.addEventListener('click',e=>{
+    const b=e.target.closest('button[data-i]'); if(!b) return;
+    state.vals[+b.dataset.i]=+b.dataset.v; persist(); paintInds(); render();
+  });
+  indEl.addEventListener('input',e=>{
+    const n=e.target.closest('.note'); if(!n) return;
+    const i=+n.id.slice(5); state.notes[i]=n.value; $('ev-'+i).textContent=n.value; persist();
+  });
+  $('toggle-edit').addEventListener('click',()=>{
+    const on=document.body.classList.toggle('editing');
+    $('toggle-edit').textContent=on?'Готово':'Править';
+  });
+
+  // scenarios
+  function renderScen(r){
+    const el=$('scen'); el.innerHTML='';
+    SC.slice().sort((a,b)=>r.probs[b.k]-r.probs[a.k]).forEach(s=>{
+      const d=document.createElement('div'); d.className='sc '+s.k;
+      d.innerHTML='<span class="mark"></span><div class="nm">'+s.name+'</div><div class="pct">'+r.probs[s.k]+'%</div>'+
+        '<div class="ds">'+s.desc+'</div><div class="base">база '+s.base+'%</div>'+
+        '<div class="bar"><i style="width:'+r.probs[s.k]+'%"></i></div>';
+      el.appendChild(d);
+    });
+  }
+  function renderVerdict(r){
+    const top=SC.slice().sort((a,b)=>r.probs[b.k]-r.probs[a.k]);
+    const gap=r.probs[top[0].k]-r.probs[top[1].k];
+    let h, sub;
+    if(!r.any){ h='Отметок нет: показаны базовые оценки.'; sub=''; }
+    else if(gap<8){ h=top[0].name+' и '+top[1].name.toLowerCase()+' идут вровень'; }
+    else { h='Лидирует '+top[0].name.toLowerCase(); }
+    const dir = r.needle>15?'Военные сигналы сейчас конкретнее и свежее сделочных.':(r.needle<-15?'Сделочные сигналы сейчас конкретнее и свежее военных.':'Сигналы с обеих сторон примерно уравновешены.');
+    sub = r.any ? (top[0].name+' — '+r.probs[top[0].k]+' %, '+top[1].name.toLowerCase()+' — '+r.probs[top[1].k]+' %. '+dir) : '';
+    $('headline').textContent=h; $('headline-sub').textContent=sub;
+    const tiles=$('tiles'); tiles.innerHTML='';
+    top.slice(0,3).forEach(s=>{
+      const t=document.createElement('div'); t.className='tile';
+      t.innerHTML='<div class="stripe" style="background:var(--sc'+s.k+')"></div><div class="pct">'+r.probs[s.k]+'<span style="font-size:20px">%</span></div><div class="nm">'+s.name+'</div>';
+      tiles.appendChild(t);
+    });
+    $('needle').style.left=(50+r.needle/2)+'%';
+    $('needle-val').textContent=(r.needle>0?'+':'')+r.needle;
+    const nato=$('nato'); nato.classList.toggle('on',r.natoLvl>=0.5); nato.classList.toggle('warn',r.natoLvl>0&&r.natoLvl<0.5);
+    $('nato-text').textContent = r.natoLvl>=0.5 ? 'Флаг НАТО горит: инциденты, учения и планы по войскам перешли в конкретику. Риск прямого столкновения России и альянса вырос.' :
+      (r.natoLvl>0 ? 'Флаг НАТО: есть отдельные сигналы (инциденты над Польшей и Балтией, нерутинные учения), но до порога они не дотягивают. Риск прямого столкновения не вырос.' : 'Флаг НАТО не горит: сигналов риска прямого столкновения России и альянса нет.');
+  }
+  function renderHist(){
+    const el=$('hist');
+    if(!state.hist.length){ el.innerHTML='<p class="empty">Снимков ещё нет.</p>'; return; }
+    const h=document.createElement('div'); h.className='hist';
+    state.hist.slice().reverse().slice(0,12).forEach(s=>{
+      const c = s.p ? {probs:s.p, needle:s.n} : compute(s.v); // seed entries may carry only v
+      const top=SC.slice().sort((a,b)=>c.probs[b.k]-c.probs[a.k])[0];
+      h.innerHTML+='<span class="d">'+fmt(s.d)+'</span><span class="mini"><i style="left:'+(50+c.needle/2)+'%"></i></span><span class="lead-s">'+top.name+' '+c.probs[top.k]+'%</span>';
+    });
+    el.innerHTML=''; el.appendChild(h);
+  }
+  function byName(n){ return IND.findIndex(x=>x.n===n); }
+  function renderAnalysis(r){
+    const el=$('analysis'); el.innerHTML='';
+    const groups={}; IND.forEach((ind,i)=>{ (groups[ind.g]=groups[ind.g]||{sum:0,max:0,yes:[]}); groups[ind.g].sum+=state.vals[i]; groups[ind.g].max+=2; if(state.vals[i]===2) groups[ind.g].yes.push(ind.n); });
+    let h='<h3>Сила групп</h3>';
+    for(const g in groups){ const q=groups[g]; const pct=Math.round(q.sum/q.max*100);
+      h+='<div class="grp"><span>'+g+'</span><span class="num">'+q.sum+' из '+q.max+' · '+pct+'%</span><div class="gb"><i style="width:'+pct+'%"></i></div></div>'; }
+    const yes=IND.filter((x,i)=>state.vals[i]===2).map(x=>x.n);
+    h+='<p><b>Сработали полностью:</b> '+(yes.length?yes.join(', '):'ни один индикатор')+'.</p>';
+    // change since previous snapshot
+    const hs=state.hist.slice().sort((a,b)=>a.d<b.d?-1:1);
+    if(hs.length>=2){ const prev=hs[hs.length-2], cur=hs[hs.length-1]; const pr=compute(prev.v), cr=compute(cur.v);
+      const ch=[]; IND.forEach((x,i)=>{ if(prev.v[i]!==cur.v[i]) ch.push(x.n+': '+PILL[prev.v[i]].toLowerCase()+' → '+PILL[cur.v[i]].toLowerCase()); });
+      h+='<h3>Что изменилось с '+fmt(prev.d)+'</h3><p>Стрелка '+(pr.needle>0?'+':'')+pr.needle+' → '+(cr.needle>0?'+':'')+cr.needle+'. '+(ch.length?'Сменили значение: ':'Отметки не менялись.')+'</p>'+(ch.length?'<ul><li>'+ch.join('</li><li>')+'</li></ul>':'');
+    } else { h+='<h3>Динамика</h3><p>Это первая оценка; сравнение появится после следующей.</p>'; }
+    // theory lenses
+    const v=i=>state.vals[i];
+    const deal=IND.reduce((a,x,i)=>a+(x.side<0?v(i):0),0)/(2*IND.filter(x=>x.side<0).length);
+    const war=IND.reduce((a,x,i)=>a+(x.side>0?v(i):0),0)/(2*IND.filter(x=>x.side>0).length);
+    const L=[];
+    L.push('<b>Созревание (Zartman).</b> Сделочные сигналы заполнены на '+Math.round(deal*100)+'%, военные — на '+Math.round(war*100)+'%. '+(deal<0.35?'Взаимно болезненного тупика в восприятии сторон пока не видно: стороны не считают, что проигрывают от продолжения.':(deal<0.6?'Признаки взаимной усталости есть, но «выход» ещё не оформлен.':'Обе стороны ищут выход — момент близок к зрелому.')));
+    const st=v(byName('Застой на фронте'));
+    L.push('<b>Информация с поля боя (Reiter).</b> '+(st===2?'Фронт статичен: ни одна сторона не получает новых данных о своих шансах, и это продлевает войну сильнее, чем движение в любую сторону.':(st===1?'Фронт движется слабо; заметного сдвига, который сблизил бы оценки сторон, нет.':'Линия заметно движется — по данным о войнах такие сдвиги чаще ведут к переговорам, чем застой.')));
+    const gu=v(byName('Гарантии безопасности для Украины')), tr=v(byName('Европейские войска в Украине')), us=v(byName('Санкции и давление США'));
+    L.push('<b>Прочность будущего перемирия (Fortna, Werner).</b> '+(gu>=1?'Каркас для оформленной заморозки обсуждается':'Каркас для оформленной заморозки не обсуждается')+(tr===0?', без дат и гарантий исполнения':', с конкретными датами по войскам')+'. '+(us===0?'Давление посредника направлено на Киев, а не на Москву: перемирие, продавленное извне без демилитаризованной зоны и гарантий, по данным исследований срывается чаще.':'Посредник давит на обе стороны — это повышает шансы на устойчивое перемирие.'));
+    const co=v(byName('Коалиция за остановку')), elit=v(byName('Борьба элит в Кремле'));
+    L.push('<b>Внутренняя коалиция (Stanley, Goemans).</b> '+(co===0?'Запроса на остановку не видно ни в обществе, ни в элитах.':(co===1?'Общественный запрос на остановку есть с обеих сторон, но элитной коалиции, которой выгодно остановиться, пока нет':'Коалиция за остановку сложилась'))+(elit>=1?'; при этом в Кремле видны трещины, которые могут ускорить сдвиг.':'.'));
+    h+='<h3>Через теории окончания войн</h3><p>'+L.join('</p><p>')+'</p>';
+    el.innerHTML=h;
+  }
+  function render(){ const r=compute(state.vals); renderVerdict(r); renderScen(r); renderHist(); renderAnalysis(r); }
+
+  // snapshot controls (edit mode)
+  function today(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  $('date').value=today();
+  $('save').addEventListener('click',()=>{
+    const r=compute(state.vals); const d=$('date').value||today();
+    state.hist=state.hist.filter(x=>x.d!==d);
+    state.hist.push({d, n:r.needle, p:r.probs, v:state.vals.slice()});
+    state.hist.sort((a,b)=>a.d<b.d?-1:1); if(state.hist.length>40) state.hist=state.hist.slice(-40);
+    persist(); renderHist(); $('msg').textContent='Снимок за '+fmt(d)+' сохранён в этом браузере.';
+  });
+  $('reset').addEventListener('click',()=>{
+    state.vals=SEED.vals.slice(); state.notes=SEED.notes.slice(); persist(); paintInds(); render();
+    $('msg').textContent='Возвращена опубликованная оценка от '+fmt(SEED.date)+'.';
+  });
+  $('copy').addEventListener('click',()=>{
+    const r=compute(state.vals);
+    const lines=['Барометр войны, '+fmt($('date').value||today()),
+      'Стрелка: '+(r.needle>0?'+':'')+r.needle+' (−100 сделка … +100 война)',
+      ...SC.slice().sort((a,b)=>r.probs[b.k]-r.probs[a.k]).map(s=>s.name+': '+r.probs[s.k]+'% (база '+s.base+'%)'),
+      'Флаг НАТО: '+(r.natoLvl>=0.5?'горит':(r.natoLvl>0?'сигналы':'нет')),
+      '', 'Отмечено:',
+      ...IND.map((ind,i)=>state.vals[i]? '- '+(state.vals[i]===2?'[да] ':'[частично] ')+ind.n+' ('+ind.t+')'+(state.notes[i]?' — '+state.notes[i]:'') : null).filter(Boolean)
+    ];
+    const txt=lines.join('\n');
+    const ok=()=>{$('msg').textContent='Сводка скопирована.';};
+    const fail=()=>{$('msg').textContent='Копирование недоступно; выдели текст ниже вручную.'; const ta=document.createElement('textarea'); ta.className='note'; ta.rows=8; ta.value=txt; ta.style.marginTop='8px'; $('msg').after(ta);};
+    try{ navigator.clipboard.writeText(txt).then(ok,fail); }catch(e){ fail(); }
+  });
+
+  paintInds(); render();
+})();
+</script>
+</body>
+</html>
