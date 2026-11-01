@@ -482,6 +482,8 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
     const dir = r.needle>15?'Военные сигналы сейчас конкретнее и свежее сделочных.':(r.needle<-15?'Сделочные сигналы сейчас конкретнее и свежее военных.':'Сигналы с обеих сторон примерно уравновешены.');
     sub = r.any ? (top[0].name+' — '+r.probs[top[0].k]+' %, '+top[1].name.toLowerCase()+' — '+r.probs[top[1].k]+' %. '+dir) : '';
     $('headline').textContent=h; $('headline-sub').textContent=sub;
+    const isSeed = state.vals.length===SEED.vals.length && state.vals.every((v,i)=>v===SEED.vals[i]);
+    $('v-title').textContent = isSeed ? 'Показание на '+fmt(SEED.date) : 'Ваш расчёт · опубликованная оценка от '+fmt(SEED.date);
     const tiles=$('tiles'); tiles.innerHTML='';
     top.slice(0,3).forEach(s=>{
       const t=document.createElement('div'); t.className='tile';
