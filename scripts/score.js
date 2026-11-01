@@ -14,14 +14,14 @@ IND.forEach((ind, i) => {
   const f = vals[i] / 2;
   for (const k in ind.e) lo[k] += ind.e[k] * f * 0.65;
   if (ind.side > 0) { warSig += f; warMax++; } else { dealSig += f; dealMax++; }
-  if (ind.nato) { nato += ind.nato * f; natoMax += ind.nato; if (vals[i] === 2) natoYes = true; }
+  if (ind.nato > 0) { nato += ind.nato * f; natoMax += ind.nato; if (vals[i] === 2) natoYes = true; } else if (ind.nato < 0) { nato += ind.nato * f; } // отрицательный вес вычитается
 });
 const ex = SC.map(s => Math.exp(lo[s.k])), sum = ex.reduce((a, b) => a + b, 0);
 const probs = {}; SC.forEach((s, i) => probs[s.k] = Math.round(ex[i] / sum * 100));
 let drift = 100 - Object.values(probs).reduce((a, b) => a + b, 0);
 if (drift) { const top = SC.slice().sort((a, b) => probs[b.k] - probs[a.k])[0]; probs[top.k] += drift; }
 const needle = Math.round((warSig / warMax - dealSig / dealMax) * 100);
-const natoLvl = natoMax ? nato / natoMax : 0;
+const natoLvl = natoMax ? Math.max(0, Math.min(1, nato / natoMax)) : 0;
 console.log('Дата оценки:', SEED.date, '| индикаторов:', IND.length);
 SC.forEach(s => console.log(`${s.name}: ${probs[s.k]} %`));
 console.log('Стрелка:', (needle > 0 ? '+' : '') + needle);
