@@ -27,3 +27,12 @@ SC.forEach(s => console.log(`${s.name}: ${probs[s.k]} %`));
 console.log('Стрелка:', (needle > 0 ? '+' : '') + needle);
 const natoOn = natoLvl >= 0.5 && natoYes; // горит: не меньше половины веса и хотя бы одно «да» в группе
 console.log('Флаг НАТО:', natoOn ? 'горит' : natoLvl > 0 ? 'сигналы' : 'нет', `(${natoLvl.toFixed(2)}${natoYes ? ', есть «да»' : ', без «да»'})`);
+console.log('Риск столкновения с НАТО:', Math.round(natoLvl * 100), 'из 100');
+// тренд относительно предыдущей опубликованной оценки (SEED.hist)
+const hist = SEED.hist.slice().sort((a, b) => (a.d < b.d ? -1 : 1));
+if (hist.length >= 2 && !process.argv[3]) {
+  const pv = hist[hist.length - 2].v; let pn = 0, pm = 0, pw = 0, pd = 0, pwm = 0, pdm = 0;
+  IND.forEach((ind, i) => { const f = pv[i] / 2; if (ind.nato > 0) { pn += ind.nato * f; pm += ind.nato; } else if (ind.nato < 0) { pn += ind.nato * f; } if (ind.side > 0) { pw += f; pwm++; } else { pd += f; pdm++; } });
+  const pl = Math.round(Math.max(0, Math.min(1, pn / pm)) * 100), pneedle = Math.round((pw / pwm - pd / pdm) * 100);
+  console.log(`С прошлой оценки (${hist[hist.length - 2].d}): стрелка ${pneedle} → ${needle}, риск НАТО ${pl} → ${Math.round(natoLvl * 100)}`);
+} else if (!process.argv[3]) console.log('Предыдущей оценки в hist нет — тренд появится после следующей.');
