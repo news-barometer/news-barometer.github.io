@@ -80,6 +80,11 @@ section{display:flex;flex-direction:column;gap:10px}
 .flag.warn .lamp{background:var(--accent)}
 .flag.on .lamp{background:var(--alert);box-shadow:0 0 0 4px rgba(255,80,60,.3)}
 .nato-gauge{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.18)}
+.scale-labels{display:flex;justify-content:space-between;font-family:var(--display);font-size:12px;letter-spacing:.06em;text-transform:uppercase;opacity:.7;margin-top:2px}
+.scale-labels span:nth-child(2){transform:translateX(0)}
+.gauge-read .val small{font-size:14px;font-weight:400;opacity:.75;letter-spacing:.02em}
+.gauge-read .lvl{font-family:var(--display);font-size:18px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-left:10px}
+.nato-gauge.on .lvl{color:var(--alert)}
 .nato-track{background:linear-gradient(90deg,rgba(255,255,255,.25) 0%,var(--accent) 50%,var(--alert) 100%)}
 .nato-gauge .lamp{display:inline-block;width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.3);margin-right:8px;vertical-align:-1px;box-shadow:0 0 0 3px rgba(255,255,255,.08)}
 .nato-gauge.warn .lamp{background:var(--accent)}
@@ -191,9 +196,10 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
     <div class="gauge-read"><span class="val" id="needle-val">0 <span class="trend" id="needle-trend"></span></span><span class="expl">Стрелка: перевес «военных» сигналов над «сделочными», от −100 до +100. Ноль — поровну.</span></div>
   </div>
   <div class="gauge nato-gauge" id="nato">
-    <div class="gauge-labels"><span>Риск столкновения с НАТО</span><span>Порог «горит» — 50</span></div>
+    <div class="gauge-labels"><span>Риск столкновения с НАТО</span><b id="nato-word" style="white-space:nowrap">—</b></div>
     <div class="track nato-track"><div class="tick"></div><div class="needle" id="nato-needle" style="left:0%"></div></div>
-    <div class="gauge-read"><span class="val" id="nato-val">0 <span class="trend" id="nato-trend"></span></span><span class="expl"><span class="lamp"></span><span id="nato-text"></span></span></div>
+    <div class="scale-labels"><span>Низкий</span><span>Средний</span><span>Высокий</span></div>
+    <div class="gauge-read"><span class="val" id="nato-val">0 <small>из 100</small> <span class="trend" id="nato-trend"></span></span><span class="expl"><span class="lamp"></span><span id="nato-text"></span></span></div>
   </div>
 </section>
 
@@ -258,7 +264,7 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
   <details>
     <summary>Что такое стрелка и флаг НАТО</summary>
     <p>Стрелка сравнивает две группы: индикаторы, которые тянут к продолжению войны, и индикаторы, которые тянут к сделке. Это разность их средних отметок, от −100 до +100.</p>
-    <p>Флаг НАТО — отдельный сигнал риска прямого столкновения России и альянса. Его питают шесть индикаторов группы «К эскалации с НАТО»: инциденты над Польшей и Балтией, удары по судоходству у берегов Румынии и Болгарии, нерутинные учения и ядерные сигналы, движение европейских войск к вводу в Украину, обстановка вокруг Калининграда и Сувалкского коридора, гибридные действия в Европе с официальной атрибуцией. Один индикатор работает в обратную сторону и снижает флаг — «Меры снижения риска НАТО–Россия» (каналы связи, уведомления, протоколы инцидентов). Уровень риска показан на шкале 0–100: это доля набранного веса сигналов; стрелка рядом с цифрой показывает, куда он сдвинулся с прошлой опубликованной оценки. Флаг загорается, когда уровень не ниже 50 и хотя бы один сигнал стоит на «да»; пока все на «частично», флаг показывает «сигналы».</p>
+    <p>Флаг НАТО — отдельный сигнал риска прямого столкновения России и альянса. Его питают шесть индикаторов группы «К эскалации с НАТО»: инциденты над Польшей и Балтией, удары по судоходству у берегов Румынии и Болгарии, нерутинные учения и ядерные сигналы, движение европейских войск к вводу в Украину, обстановка вокруг Калининграда и Сувалкского коридора, гибридные действия в Европе с официальной атрибуцией. Один индикатор работает в обратную сторону и снижает флаг — «Меры снижения риска НАТО–Россия» (каналы связи, уведомления, протоколы инцидентов). Уровень риска показан на шкале 0–100: это доля набранного веса сигналов. Словами: до 33 — низкий, 34–66 — средний, от 67 — высокий. Стрелка рядом с цифрой показывает, куда уровень сдвинулся с прошлой опубликованной оценки. Флаг загорается, когда уровень не ниже 50 (середина шкалы, отмечена штрихом) и хотя бы один сигнал стоит на «да»; пока все на «частично», флаг не горит.</p>
   </details>
   <details>
     <summary>Откуда данные и кто ставит отметки</summary>
@@ -487,6 +493,8 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
     const nl=Math.round(r.natoLvl*100);
     $('nato-needle').style.left=nl+'%';
     $('nato-val').firstChild.textContent=nl+' ';
+    const natoWord = nl===0?'нет':(nl<34?'низкий':(nl<67?'средний':'высокий'));
+    $('nato-word').textContent=natoWord;
     // trend vs previous published assessment (official history only, not personal snapshots)
     const oh=SEED.hist.slice().sort((a,b)=>a.d<b.d?-1:1);
     const prev=oh.length>=2?compute(oh[oh.length-2].v):null; const prevD=oh.length>=2?fmt(oh[oh.length-2].d):'';
@@ -494,8 +502,8 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
     trend($('needle-trend'), r.needle, prev?prev.needle:null, '');
     trend($('nato-trend'), nl, prev?Math.round(prev.natoLvl*100):null, '');
     const nato=$('nato'); nato.classList.toggle('on',r.natoOn); nato.classList.toggle('warn',r.natoLvl>0&&!r.natoOn);
-    $('nato-text').textContent = r.natoOn ? 'Флаг НАТО горит: хотя бы один сигнал группы перешёл в «да» и их сумма выше порога. Риск прямого столкновения России и альянса вырос.' :
-      (r.natoLvl>0 ? 'Флаг НАТО: сигналы есть (инциденты над Польшей и Балтией, транзит в Калининград, гибридные действия, нерутинные учения), но ни один не перешёл в «да». Риск прямого столкновения не вырос.' : 'Флаг НАТО не горит: сигналов риска прямого столкновения России и альянса нет.');
+    $('nato-text').textContent = r.natoOn ? 'Флаг горит: хотя бы один из шести сигналов перешёл в «да», и их сумма выше середины шкалы.' :
+      (r.natoLvl>0 ? 'Флаг не горит: сигналы есть (Балтика, Калининград, гибридные действия, учения), но ни один не перешёл в «да».' : 'Сигналов нет.');
   }
   function renderHist(){
     const el=$('hist');
@@ -559,7 +567,7 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
     const lines=['Барометр войны, '+fmt($('date').value||today()),
       'Стрелка: '+(r.needle>0?'+':'')+r.needle+' (−100 сделка … +100 война)',
       ...SC.slice().sort((a,b)=>r.probs[b.k]-r.probs[a.k]).map(s=>s.name+': '+r.probs[s.k]+'% (база '+s.base+'%)'),
-      'Риск столкновения с НАТО: '+Math.round(r.natoLvl*100)+' из 100 — флаг '+(r.natoOn?'горит':(r.natoLvl>0?'сигналы':'нет')),
+      'Риск столкновения с НАТО: '+Math.round(r.natoLvl*100)+' из 100 ('+(r.natoLvl===0?'нет':(r.natoLvl<.34?'низкий':(r.natoLvl<.67?'средний':'высокий')))+') — флаг '+(r.natoOn?'горит':(r.natoLvl>0?'сигналы':'нет')),
       '', 'Отмечено:',
       ...IND.map((ind,i)=>state.vals[i]? '- '+(state.vals[i]===2?'[да] ':'[частично] ')+ind.n+' ('+ind.t+')'+(state.notes[i]?' — '+state.notes[i]:'') : null).filter(Boolean)
     ];
