@@ -177,7 +177,7 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
 </head>
 <body>
 <header>
-  <div class="eyebrow">Открытый монитор · обновляется по понедельникам</div>
+  <div class="eyebrow">Открытый монитор · обновляется по вторникам</div>
   <h1>Барометр войны</h1>
   <p class="dek">Куда идёт война России и Украины. Четыре возможных исхода на горизонте до конца 2027 года и 27 наблюдаемых индикаторов, по которым видно, какой из них сейчас ближе.</p>
   <div class="meta"><span>Оценка от <b id="seed-date">—</b></span><span>Следующая: <b id="next-date">—</b></span><span>Источники: открытые СМИ и официальные заявления</span></div>
@@ -268,7 +268,7 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
   </details>
   <details>
     <summary>Откуда данные и кто ставит отметки</summary>
-    <p>Отметки выставляет ИИ-ассистент Claude каждый понедельник по открытым источникам: новостные агентства, издания обеих сторон, официальные заявления, трекеры помощи и потерь. Цифры, которые называет только одна сторона конфликта, помечаются как её оценка. Список индикаторов, базовые вероятности и веса задал автор барометра.</p>
+    <p>Отметки выставляет ИИ-ассистент Claude каждый вторник по открытым источникам: новостные агентства, издания обеих сторон, официальные заявления, трекеры помощи и потерь. Цифры, которые называет только одна сторона конфликта, помечаются как её оценка. Список индикаторов, базовые вероятности и веса задал автор барометра.</p>
   </details>
   <details>
     <summary>На какие исследования опирается набор индикаторов</summary>
@@ -412,7 +412,7 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
   const fmt = d => d.split('-').reverse().join('.');
   function isoWeek(x){ const d=new Date(Date.UTC(x.getFullYear(),x.getMonth(),x.getDate())); const day=d.getUTCDay()||7; d.setUTCDate(d.getUTCDate()+4-day); const y0=new Date(Date.UTC(d.getUTCFullYear(),0,1)); return Math.ceil(((d-y0)/864e5+1)/7); }
   // next assessment: the first Monday after the seed date (weekly update cadence)
-  function nextDate(d){ const x=new Date(d+'T12:00:00'); for(let i=0;i<8;i++){ x.setDate(x.getDate()+1); if(x.getDay()===1) break; } return fmt(x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')); }
+  function nextDate(d){ const x=new Date(d+'T12:00:00'); for(let i=0;i<8;i++){ x.setDate(x.getDate()+1); if(x.getDay()===2) break; } return fmt(x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')); }
 
   const $=id=>document.getElementById(id);
   $('seed-date').textContent=fmt(SEED.date); $('next-date').textContent='около '+nextDate(SEED.date);
