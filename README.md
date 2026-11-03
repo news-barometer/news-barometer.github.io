@@ -4,6 +4,10 @@
 
 Страница: https://news-barometer.github.io/ — `index.html`, одна статическая страница без зависимостей (кроме Google Fonts), публикуется через GitHub Pages.
 
+Страница двуязычная: переключатель RU/EN в шапке (язык запоминается в браузере, по умолчанию — язык браузера). На английский переведены интерфейс, сценарии, названия и правила чтения индикаторов; заметки «Основание» ведутся по-русски. Тексты лежат парами в блоках `.l-ru` / `.l-en`, у сценариев и индикаторов — поле `en`.
+
+*English: an open monitor of where the war between Russia and Ukraine is heading — four outcomes by the end of 2027, 27 observable indicators, updated every Tuesday. Switch the language with the RU/EN toggle at the top of the page.*
+
 ## Обновление оценки
 
 В `index.html` меняется только блок `const SEED = {...}` (date, vals, notes, запись в hist).
