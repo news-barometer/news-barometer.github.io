@@ -9,10 +9,12 @@ const SC = grab('SC'), IND = grab('IND'), SEED = grab('SEED');
 const vals = process.argv[3] ? process.argv[3].split(',').map(Number) : SEED.vals;
 if (vals.length !== IND.length) throw new Error('vals length ' + vals.length + ' != ' + IND.length);
 const lo = {}; SC.forEach(s => lo[s.k] = Math.log(s.base / 100));
+const CN = {}; IND.forEach(ind => { CN[ind.c] = (CN[ind.c] || 0) + 1; }); // размер кластера: индикаторы одного кластера получают 1/√n веса
 let warSig = 0, dealSig = 0, warMax = 0, dealMax = 0, nato = 0, natoMax = 0, natoYes = false;
 IND.forEach((ind, i) => {
   const f = vals[i] / 2;
-  for (const k in ind.e) lo[k] += ind.e[k] * f * 0.65;
+  const w = 0.65 / Math.sqrt(CN[ind.c] || 1);
+  for (const k in ind.e) lo[k] += ind.e[k] * f * w;
   if (ind.side > 0) { warSig += f; warMax++; } else { dealSig += f; dealMax++; }
   if (ind.nato > 0) { nato += ind.nato * f; natoMax += ind.nato; if (vals[i] === 2) natoYes = true; } else if (ind.nato < 0) { nato += ind.nato * f; } // отрицательный вес вычитается
 });
