@@ -173,112 +173,149 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
   .tile:nth-child(3){grid-column:1/-1}
 }
 @media (prefers-reduced-motion: reduce){.needle,.sc .bar i{transition:none}}
+/* language toggle + bilingual blocks: body.lang-en hides .l-ru, body.lang-ru hides .l-en */
+header{position:relative}
+.lang{position:absolute;top:-2px;right:0;display:flex;gap:2px}
+header>.eyebrow{padding-right:112px}
+.lang button{appearance:none;font-family:var(--display);font-size:12px;font-weight:600;letter-spacing:.1em;padding:4px 9px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;border-radius:4px}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.lang-en .l-ru{display:none!important} .lang-ru .l-en{display:none!important}
+.lang-en .ind .ev::before{content:"Evidence (ru): "}
 </style>
 </head>
 <body>
 <header>
-  <div class="eyebrow">Открытый монитор · обновляется по вторникам</div>
-  <h1>Барометр войны</h1>
-  <p class="dek">Куда идёт война России и Украины. Четыре возможных исхода на горизонте до конца 2027 года и 27 наблюдаемых индикаторов, по которым видно, какой из них сейчас ближе.</p>
-  <div class="meta"><span>Оценка от <b id="seed-date">—</b></span><span>Следующая: <b id="next-date">—</b></span><span>Источники: открытые СМИ и официальные заявления</span></div>
+  <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="ru" aria-pressed="true">RU</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+  <div class="eyebrow"><span class="l-ru">Открытый монитор · обновляется по вторникам</span><span class="l-en">Open monitor · updated every Tuesday</span></div>
+  <h1><span class="l-ru">Барометр войны</span><span class="l-en">War Barometer</span></h1>
+  <p class="dek"><span class="l-ru">Куда идёт война России и Украины. Четыре возможных исхода на горизонте до конца 2027 года и 27 наблюдаемых индикаторов, по которым видно, какой из них сейчас ближе.</span><span class="l-en">Where the war between Russia and Ukraine is heading. Four possible outcomes by the end of 2027 and 27 observable indicators that show which one is currently closer.</span></p>
+  <div class="meta"><span><span class="l-ru">Оценка от</span><span class="l-en">Assessment of</span> <b id="seed-date">—</b></span><span><span class="l-ru">Следующая:</span><span class="l-en">Next:</span> <b id="next-date">—</b></span><span class="l-ru">Источники: открытые СМИ и официальные заявления</span><span class="l-en">Sources: open media and official statements</span></div>
 </header>
 
 <div class="stack">
 
 <section class="verdict" aria-labelledby="v-title">
-  <div class="eyebrow" id="v-title">Показание сейчас</div>
+  <div class="eyebrow" id="v-title">—</div>
   <div class="headline" id="headline">—</div>
   <p class="sub" id="headline-sub"></p>
   <div class="tiles" id="tiles"></div>
   <div class="gauge">
-    <div class="gauge-labels"><span>К сделке</span><span>К продолжению войны</span></div>
+    <div class="gauge-labels"><span><span class="l-ru">К сделке</span><span class="l-en">Toward a deal</span></span><span><span class="l-ru">К продолжению войны</span><span class="l-en">Toward continued war</span></span></div>
     <div class="track"><div class="tick"></div><div class="needle" id="needle"></div></div>
-    <div class="gauge-read"><span class="val" id="needle-val">0 <span class="trend" id="needle-trend"></span></span><span class="expl">Стрелка: перевес «военных» сигналов над «сделочными», от −100 до +100. Ноль — поровну.</span></div>
+    <div class="gauge-read"><span class="val" id="needle-val">0 <span class="trend" id="needle-trend"></span></span><span class="expl"><span class="l-ru">Стрелка: перевес «военных» сигналов над «сделочными», от −100 до +100. Ноль — поровну.</span><span class="l-en">The needle: how much "war" signals outweigh "deal" signals, from −100 to +100. Zero means even.</span></span></div>
   </div>
   <div class="gauge nato-gauge" id="nato">
-    <div class="gauge-labels"><span>Риск столкновения с НАТО</span><b id="nato-word" style="white-space:nowrap">—</b></div>
+    <div class="gauge-labels"><span><span class="l-ru">Риск столкновения с НАТО</span><span class="l-en">Risk of a NATO clash</span></span><b id="nato-word" style="white-space:nowrap">—</b></div>
     <div class="track nato-track"><div class="tick"></div><div class="needle" id="nato-needle" style="left:0%"></div></div>
-    <div class="scale-labels"><span>Низкий</span><span>Средний</span><span>Высокий</span></div>
-    <div class="gauge-read"><span class="val" id="nato-val">0 <small>из 100</small> <span class="trend" id="nato-trend"></span></span><span class="expl"><span class="lamp"></span><span id="nato-text"></span></span></div>
+    <div class="scale-labels"><span><span class="l-ru">Низкий</span><span class="l-en">Low</span></span><span><span class="l-ru">Средний</span><span class="l-en">Medium</span></span><span><span class="l-ru">Высокий</span><span class="l-en">High</span></span></div>
+    <div class="gauge-read"><span class="val" id="nato-val">0 <small><span class="l-ru">из 100</span><span class="l-en">of 100</span></small> <span class="trend" id="nato-trend"></span></span><span class="expl"><span class="lamp"></span><span id="nato-text"></span></span></div>
   </div>
 </section>
 
 <section class="card" aria-labelledby="s-title">
-  <h2 id="s-title">Четыре исхода и их вероятность до конца 2027 года</h2>
-  <p class="small muted">Отсортированы по текущей оценке. «База» — стартовая вероятность до учёта индикаторов.</p>
+  <h2 id="s-title"><span class="l-ru">Четыре исхода и их вероятность до конца 2027 года</span><span class="l-en">Four outcomes and their probability by the end of 2027</span></h2>
+  <p class="small muted"><span class="l-ru">Отсортированы по текущей оценке. «База» — стартовая вероятность до учёта индикаторов.</span><span class="l-en">Sorted by the current assessment. "Base" is the starting probability before indicators are applied.</span></p>
   <div id="scen"></div>
 </section>
 
 <section class="card" aria-labelledby="a-title">
-  <h2 id="a-title">Разбор</h2>
-  <p class="small muted">Собирается автоматически из отметок: сила каждой группы, что изменилось с прошлой оценки и как это читается через теории окончания войн.</p>
+  <h2 id="a-title"><span class="l-ru">Разбор</span><span class="l-en">Analysis</span></h2>
+  <p class="small muted"><span class="l-ru">Собирается автоматически из отметок: сила каждой группы, что изменилось с прошлой оценки и как это читается через теории окончания войн.</span><span class="l-en">Generated automatically from the ratings: the strength of each group, what changed since the previous assessment, and how it reads through theories of war termination.</span></p>
   <div id="analysis" class="analysis"></div>
 </section>
 
 <section class="card" aria-labelledby="h-title">
-  <h2 id="h-title">Как читать</h2>
-  <div class="howto">
+  <h2 id="h-title"><span class="l-ru">Как читать</span><span class="l-en">How to read it</span></h2>
+  <div class="howto l-ru">
     <div><b>Индикатор</b>Наблюдаемое событие, которое обычно предшествует одному из исходов. У каждого три состояния: нет, частично, да.</div>
     <div><b>Вероятность</b>Каждая отметка «да» или «частично» сдвигает вероятности исходов на заданный вес. Веса заданы заранее и не меняются от оценки к оценке.</div>
     <div><b>Не прогноз</b>Это структурированное наблюдение: оно показывает, в какую сторону накапливаются факты, а не предсказывает дату или результат.</div>
+  </div>
+  <div class="howto l-en">
+    <div><b>Indicator</b>An observable event that usually precedes one of the outcomes. Each has three states: no, partly, yes.</div>
+    <div><b>Probability</b>Every "yes" or "partly" shifts the outcome probabilities by a preset weight. Weights are fixed in advance and do not change from one assessment to the next.</div>
+    <div><b>Not a forecast</b>This is structured observation: it shows which way the facts are accumulating, not a predicted date or result.</div>
   </div>
 </section>
 
 <section class="card" aria-labelledby="i-title">
   <div class="sec-head">
     <div>
-      <h2 id="i-title">Индикаторы и основания</h2>
-      <p class="small muted" style="margin-top:4px">27 индикаторов в четырёх группах. Под каждым — факт, на котором держится отметка.</p>
+      <h2 id="i-title"><span class="l-ru">Индикаторы и основания</span><span class="l-en">Indicators and evidence</span></h2>
+      <p class="small muted" style="margin-top:4px"><span class="l-ru">27 индикаторов в четырёх группах. Под каждым — факт, на котором держится отметка.</span><span class="l-en">27 indicators in four groups. Under each one — the facts the rating rests on.</span></p>
     </div>
-    <button class="btn" id="toggle-edit" type="button">Проверить свои отметки</button>
+    <button class="btn" id="toggle-edit" type="button">—</button>
   </div>
-  <p class="small muted edit-only">Это ваш личный расчёт: отметки сохраняются только в этом браузере, на опубликованную оценку и на других читателей не влияют. Кнопка «Вернуть оценку» возвращает официальные значения.</p>
+  <p class="small muted l-en"><span class="l-en">Evidence notes are written in Russian, the language of most primary sources on both sides. Use your browser's page translation to read them; names, statements and rules of reading are available in English.</span></p>
+  <p class="small muted edit-only"><span class="l-ru">Это ваш личный расчёт: отметки сохраняются только в этом браузере, на опубликованную оценку и на других читателей не влияют. Кнопка «Вернуть оценку» возвращает официальные значения.</span><span class="l-en">This is your personal calculation: ratings are stored only in this browser and do not affect the published assessment or other readers. "Restore assessment" brings back the official values.</span></p>
   <div id="inds"></div>
 </section>
 
 <section class="card edit-only" aria-labelledby="c-title">
-  <h2 id="c-title">Личный снимок</h2>
+  <h2 id="c-title"><span class="l-ru">Личный снимок</span><span class="l-en">Personal snapshot</span></h2>
   <div class="row" style="margin-top:8px">
-    <label for="date" class="small muted">Дата</label>
+    <label for="date" class="small muted"><span class="l-ru">Дата</span><span class="l-en">Date</span></label>
     <input type="date" id="date">
-    <button class="btn primary" id="save" type="button">Сохранить снимок</button>
-    <button class="btn" id="copy" type="button">Скопировать сводку</button>
-    <button class="btn" id="reset" type="button">Вернуть оценку</button>
+    <button class="btn primary" id="save" type="button"><span class="l-ru">Сохранить снимок</span><span class="l-en">Save snapshot</span></button>
+    <button class="btn" id="copy" type="button"><span class="l-ru">Скопировать сводку</span><span class="l-en">Copy summary</span></button>
+    <button class="btn" id="reset" type="button"><span class="l-ru">Вернуть оценку</span><span class="l-en">Restore assessment</span></button>
   </div>
   <p class="msg" id="msg"></p>
 </section>
 
 <section class="card" aria-labelledby="t-title">
-  <h2 id="t-title">Динамика</h2>
-  <p class="small muted">Положение стрелки, лидирующий исход и уровень риска столкновения с НАТО (0–100) на каждую дату оценки.</p>
+  <h2 id="t-title"><span class="l-ru">Динамика</span><span class="l-en">Trend</span></h2>
+  <p class="small muted"><span class="l-ru">Положение стрелки, лидирующий исход и уровень риска столкновения с НАТО (0–100) на каждую дату оценки.</span><span class="l-en">Needle position, leading outcome and NATO-clash risk level (0–100) on each assessment date.</span></p>
   <div id="hist"></div>
 </section>
 
 <section class="card" aria-labelledby="m-title">
-  <h2 id="m-title">Метод и ограничения</h2>
+  <h2 id="m-title"><span class="l-ru">Метод и ограничения</span><span class="l-en">Method and limitations</span></h2>
   <details>
-    <summary>Как считаются вероятности</summary>
+    <summary><span class="l-ru">Как считаются вероятности</span><span class="l-en">How the probabilities are computed</span></summary>
+    <div class="l-ru">
     <p>У каждого исхода есть базовая вероятность: заморозка без соглашения 38 %, заморозка по соглашению 32 %, продолжение войны 24 %, мирный договор 6 %. Базы сверены со статистикой окончания межгосударственных войн (UCDP, 1946–2005: перемирие 33 %, мирное соглашение 16 %, затухание без урегулирования 21 %) и с рынками прогнозов на конец 2027–2028 года. Поражение одной из сторон не выделено в отдельный исход: на практике оно оформляется тем же договором или заморозкой, только на других условиях, поэтому его предвестники распределены по группам. Каждый индикатор несёт набор весов: какие исходы он делает вероятнее, какие — менее вероятными. Отметка «да» применяет вес полностью, «частично» — наполовину. Результат нормируется так, чтобы четыре исхода в сумме давали 100 %.</p>
     <p>Веса приглушены: даже все индикаторы одной группы на «да» не поднимают исход выше примерно 80–85 %. Это сделано намеренно, чтобы пара новостей не переворачивала картину.</p>
+    </div>
+    <div class="l-en">
+    <p>Each outcome has a base probability: freeze without agreement 38 %, freeze by agreement 32 %, continued war 24 %, peace treaty 6 %. The bases are checked against statistics on how interstate wars end (UCDP, 1946–2005: ceasefire 33 %, peace agreement 16 %, fading out without settlement 21 %) and against prediction markets for late 2027–2028. Defeat of either side is not a separate outcome: in practice it takes the form of the same treaty or freeze, only on different terms, so its precursors are spread across the groups. Each indicator carries a set of weights: which outcomes it makes more likely and which less. A "yes" applies the full weight, "partly" applies half. The result is normalised so that the four outcomes sum to 100 %.</p>
+    <p>The weights are damped: even with every indicator of one group at "yes", no outcome rises above roughly 80–85 %. This is deliberate, so that a couple of news items cannot flip the picture.</p>
+    </div>
   </details>
   <details>
-    <summary>Что такое стрелка и флаг НАТО</summary>
+    <summary><span class="l-ru">Что такое стрелка и флаг НАТО</span><span class="l-en">The needle and the NATO flag</span></summary>
+    <div class="l-ru">
     <p>Стрелка сравнивает две группы: индикаторы, которые тянут к продолжению войны, и индикаторы, которые тянут к сделке. Это разность их средних отметок, от −100 до +100.</p>
     <p>Флаг НАТО — отдельный сигнал риска прямого столкновения России и альянса. Его питают шесть индикаторов группы «К эскалации с НАТО»: инциденты над Польшей и Балтией, удары по судоходству у берегов Румынии и Болгарии, нерутинные учения и ядерные сигналы, движение европейских войск к вводу в Украину, обстановка вокруг Калининграда и Сувалкского коридора, гибридные действия в Европе с официальной атрибуцией. Один индикатор работает в обратную сторону и снижает флаг — «Меры снижения риска НАТО–Россия» (каналы связи, уведомления, протоколы инцидентов). Уровень риска показан на шкале 0–100: это доля набранного веса сигналов. Словами: до 33 — низкий, 34–66 — средний, от 67 — высокий. Стрелка рядом с цифрой показывает, куда уровень сдвинулся с прошлой опубликованной оценки. Флаг загорается, когда уровень не ниже 50 (середина шкалы, отмечена штрихом) и хотя бы один сигнал стоит на «да»; пока все на «частично», флаг не горит.</p>
+    </div>
+    <div class="l-en">
+    <p>The needle compares two groups: indicators that pull toward continued war and indicators that pull toward a deal. It is the difference between their average ratings, from −100 to +100.</p>
+    <p>The NATO flag is a separate signal of the risk of a direct clash between Russia and the alliance. It is fed by the six indicators of the "Toward escalation with NATO" group: incidents over Poland and the Baltic, strikes on shipping off Romania and Bulgaria, non-routine exercises and nuclear signalling, European troops moving toward deployment in Ukraine, the situation around Kaliningrad and the Suwałki corridor, and hybrid actions in Europe with official attribution. One indicator works the other way and lowers the flag — "NATO–Russia risk-reduction measures" (communication channels, notifications, incident protocols). The risk level is shown on a 0–100 scale: the share of signal weight accumulated. In words: up to 33 — low, 34–66 — medium, 67 and above — high. The arrow next to the number shows how the level moved since the previous published assessment. The flag lights up when the level is at least 50 (the middle of the scale, marked with a tick) and at least one signal is at "yes"; while all are at "partly", the flag stays off.</p>
+    </div>
   </details>
   <details>
-    <summary>Откуда данные и кто ставит отметки</summary>
-    <p>Отметки выставляет ИИ-ассистент Claude каждый вторник по открытым источникам: новостные агентства, издания обеих сторон, официальные заявления, трекеры помощи и потерь. Цифры, которые называет только одна сторона конфликта, помечаются как её оценка. Список индикаторов, базовые вероятности и веса задал автор барометра.</p>
+    <summary><span class="l-ru">Откуда данные и кто ставит отметки</span><span class="l-en">Where the data comes from and who sets the ratings</span></summary>
+    <p class="l-ru">Отметки выставляет ИИ-ассистент Claude каждый вторник по открытым источникам: новостные агентства, издания обеих сторон, официальные заявления, трекеры помощи и потерь. Цифры, которые называет только одна сторона конфликта, помечаются как её оценка. Список индикаторов, базовые вероятности и веса задал автор барометра.</p>
+    <p class="l-en">The ratings are set every Tuesday by the AI assistant Claude from open sources: news agencies, publications on both sides, official statements, aid and casualty trackers. Figures cited by only one side of the conflict are marked as that side's estimate. The list of indicators, the base probabilities and the weights were set by the barometer's author.</p>
   </details>
   <details>
-    <summary>На какие исследования опирается набор индикаторов</summary>
+    <summary><span class="l-ru">На какие исследования опирается набор индикаторов</span><span class="l-en">The research behind the set of indicators</span></summary>
+    <div class="l-ru">
     <p>Информационная теория окончания войн (Fearon, Reiter): война идёт, пока стороны расходятся в оценке своих шансов; новые результаты на поле боя сближают оценки, застой — нет. Отсюда индикатор «Застой на фронте» и «Баланс сил по тренду».</p>
     <p>Теория созревания (Zartman): переговоры начинаются при взаимно болезненном тупике и видимом выходе; тупик измеряется трендом издержек за месяцы, а не моментом. Отсюда экономические индикаторы, выплаты, перемирия и переговоры как «выход».</p>
     <p>Внутренняя политика (Goemans, Stanley): лидеры, которым грозит наказание за проигрыш, воюют дольше; войны заканчиваются сдвигом внутренней коалиции. Отсюда «Перестановки во власти», «Публичный график лидеров», «Коалиция за остановку», «Выборы в Украине».</p>
     <p>Прочность перемирий (Fortna, Werner & Yuen): демилитаризованные зоны, гарантии третьих сторон и миротворцы удлиняют мир; перемирия под давлением третьей стороны и сдвиг соотношения сил его ломают. Отсюда «Гарантии безопасности», «Санкции и давление США» и разделение заморозки на «без соглашения» и «по соглашению». «Европейские войска в Украине» учитываются отдельно как риск эскалации: по Фортне мир удлиняют только гарантии, принятые обеими сторонами, а присутствие, которое одна сторона объявляет целью, — источник срыва.</p>
+    </div>
+    <div class="l-en">
+    <p>The informational theory of war termination (Fearon, Reiter): a war continues while the sides disagree about their chances; new battlefield results bring their estimates closer, stalemate does not. Hence "Front-line stalemate" and "Balance of forces by trend".</p>
+    <p>Ripeness theory (Zartman): negotiations begin at a mutually hurting stalemate with a visible way out; the stalemate is measured by the trend of costs over months, not by a moment. Hence the economic indicators, payments, ceasefires and talks as the "way out".</p>
+    <p>Domestic politics (Goemans, Stanley): leaders who face punishment for losing fight longer; wars end with a shift in the domestic coalition. Hence "Leadership changes", "Leaders' public schedules", "Coalition for stopping", "Elections in Ukraine".</p>
+    <p>Durability of ceasefires (Fortna, Werner & Yuen): demilitarised zones, third-party guarantees and peacekeepers prolong peace; ceasefires imposed by a third party and shifts in the balance of power break it. Hence "Security guarantees", "US sanctions and pressure" and the split between a freeze "without agreement" and "by agreement". "European troops in Ukraine" is counted separately as an escalation risk: by Fortna, only guarantees accepted by both sides prolong peace, while a presence that one side declares a target is a source of breakdown.</p>
+    </div>
   </details>
   <details>
-    <summary>Источники данных и защита от дезинформации</summary>
+    <summary><span class="l-ru">Источники данных и защита от дезинформации</span><span class="l-en">Data sources and protection against disinformation</span></summary>
+    <div class="l-ru">
     <p><b>Принцип.</b> Используются только официальные государственные источники обеих сторон и третьих стран, межправительственные организации, информационные агентства и независимые академические институты с открытой методологией. Издания и проекты с особым правовым статусом в России или Украине в качестве источников не используются.</p>
     <p><b>Правила.</b> Событие засчитывается только по первичному документу или двум независимым агентствам. Спорная цифра — минимум два источника с разных сторон, иначе в основании стоит «по данным X». Заявление и событие — разные вещи: в основание идёт событие. Социальные сети, мессенджеры, видеоблоги и «инсайды» основанием не являются. У каждой заметки — дата и источник.</p>
     <p><b>Официальные источники сторон:</b> Россия — kremlin.ru, mid.ru, Минобороны РФ, Минфин РФ, ЦБ РФ, Росстат, publication.pravo.gov.ru; Украина — president.gov.ua, mfa.gov.ua, Минобороны и Генштаб Украины, Минэнерго, Укрэнерго, rada.gov.ua, ЦИК Украины, ДБР.</p>
@@ -287,61 +324,76 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
     <p><b>Независимые академические институты и трекеры:</b> BOFIT (Банк Финляндии) — экономика России; Kiel Institute (Ukraine Support Tracker) — помощь Украине; CREA — доходы от экспорта энергоносителей; IISS, SIPRI, RUSI, CSIS — военный баланс; ISW — геолоцированные изменения на фронте; Stars and Stripes — официальное издание для американских военных.</p>
     <p><b>Общественное мнение:</b> Россия — ВЦИОМ и ФОМ (государственные и близкие к государству, с этой пометкой); Украина — КМИС, «Рейтинг», Центр Разумкова. Опросы в условиях военного положения с обеих сторон показывают динамику, а не точный уровень.</p>
     <p><b>Сверка:</b> Metaculus и Polymarket — не источник фактов, а проверка, не разошёлся ли барометр с коллективной оценкой.</p>
+    </div>
+    <div class="l-en">
+    <p><b>Principle.</b> Only official government sources of both sides and of third countries, intergovernmental organisations, news agencies and independent academic institutes with open methodology are used. Outlets and projects with a special legal status in Russia or Ukraine are not used as sources.</p>
+    <p><b>Rules.</b> An event counts only on the basis of a primary document or two independent agencies. A disputed figure needs at least two sources from different sides; otherwise the evidence says "according to X". A statement and an event are different things: the event goes into the evidence. Social networks, messengers, video blogs and "insider" claims are not evidence. Every note carries a date and a source.</p>
+    <p><b>Official sources of the parties:</b> Russia — kremlin.ru, mid.ru, Russian Ministry of Defence, Ministry of Finance, Central Bank, Rosstat, publication.pravo.gov.ru; Ukraine — president.gov.ua, mfa.gov.ua, Ministry of Defence and General Staff of Ukraine, Ministry of Energy, Ukrenergo, rada.gov.ua, Central Election Commission, State Bureau of Investigation.</p>
+    <p><b>Third countries and intergovernmental organisations:</b> state.gov, whitehouse.gov; nato.int, SHAPE; Council of the EU; defence ministries of Poland, Romania, Bulgaria, Lithuania, Estonia; for Germany — Bundeswehr, Verfassungsschutz, BBK; IMF, World Bank, UN, OSCE; Lloyd's Joint War Committee (insurance risk zones).</p>
+    <p><b>Agencies:</b> Reuters, AP, AFP; Interfax (Russian and Ukrainian editions, for comparison). Reports citing anonymous sources (Bloomberg, FT, WSJ, Axios) are used only as "according to the outlet's sources" and do not change a rating.</p>
+    <p><b>Independent academic institutes and trackers:</b> BOFIT (Bank of Finland) — Russia's economy; Kiel Institute (Ukraine Support Tracker) — aid to Ukraine; CREA — energy export revenues; IISS, SIPRI, RUSI, CSIS — military balance; ISW — geolocated changes at the front; Stars and Stripes — the official publication for US service members.</p>
+    <p><b>Public opinion:</b> Russia — VCIOM and FOM (state-run and state-affiliated, marked as such); Ukraine — KIIS, Rating Group, Razumkov Centre. Polls under martial law on both sides show direction, not exact levels.</p>
+    <p><b>Cross-check:</b> Metaculus and Polymarket are not sources of facts but a check on whether the barometer has drifted from the collective estimate.</p>
+    </div>
   </details>
   <details>
-    <summary>Ограничения</summary>
-    <p>Веса субъективны, хоть и зафиксированы. Часть индикаторов опирается на заявления, а не на проверяемые факты. Горизонт — до конца 2027 года: три исхода означают, что война заканчивается внутри этого срока, «продолжение войны» — что не заканчивается; события за его пределами не оцениваются. Барометр не учитывает «чёрных лебедей»: внезапных событий, у которых нет предвестников в списке.</p>
+    <summary><span class="l-ru">Ограничения</span><span class="l-en">Limitations</span></summary>
+    <p class="l-ru">Веса субъективны, хоть и зафиксированы. Часть индикаторов опирается на заявления, а не на проверяемые факты. Горизонт — до конца 2027 года: три исхода означают, что война заканчивается внутри этого срока, «продолжение войны» — что не заканчивается; события за его пределами не оцениваются. Барометр не учитывает «чёрных лебедей»: внезапных событий, у которых нет предвестников в списке.</p>
+    <p class="l-en">The weights are subjective, although fixed. Some indicators rest on statements rather than verifiable facts. The horizon is the end of 2027: three outcomes mean the war ends within that period, "continued war" means it does not; events beyond it are not assessed. The barometer does not account for "black swans": sudden events with no precursors on the list.</p>
   </details>
 </section>
 
 </div>
 
-<footer>Страница живёт по постоянной ссылке и перезаписывается при каждой оценке. Прошлые показания — в разделе «Динамика».<br><br>Это аналитический инструмент, а не СМИ и не позиция по конфликту: он не содержит призывов, не поддерживает ни одну из сторон и не оценивает действия армий и правительств. Все данные — из открытых источников с указанием происхождения; цифры одной стороны помечены как её данные. Вероятности — модельные оценки, а не утверждения о фактах. Слово «война» в названии и тексте употребляется в значении международного права — вооружённый конфликт между государствами — и не является правовой или политической квалификацией действий какой-либо из сторон; официальные наименования событий в России и Украине различаются, страница не выбирает между ними. Упоминание организаций не означает поддержки их позиции; статусы организаций по законодательству отдельных стран указаны там, где это требуется.</footer>
+<footer>
+<span class="l-ru">Страница живёт по постоянной ссылке и перезаписывается при каждой оценке. Прошлые показания — в разделе «Динамика».<br><br>Это аналитический инструмент, а не СМИ и не позиция по конфликту: он не содержит призывов, не поддерживает ни одну из сторон и не оценивает действия армий и правительств. Все данные — из открытых источников с указанием происхождения; цифры одной стороны помечены как её данные. Вероятности — модельные оценки, а не утверждения о фактах. Слово «война» в названии и тексте употребляется в значении международного права — вооружённый конфликт между государствами — и не является правовой или политической квалификацией действий какой-либо из сторон; официальные наименования событий в России и Украине различаются, страница не выбирает между ними. Упоминание организаций не означает поддержки их позиции; статусы организаций по законодательству отдельных стран указаны там, где это требуется.</span>
+<span class="l-en">The page lives at a permanent link and is overwritten with every assessment. Past readings are in the "Trend" section.<br><br>This is an analytical tool, not a media outlet and not a position on the conflict: it contains no calls to action, supports neither side and does not judge the actions of armies or governments. All data comes from open sources with provenance stated; figures from one side are marked as that side's data. Probabilities are model estimates, not statements of fact. The word "war" in the title and text is used in its international-law sense — an armed conflict between states — and is not a legal or political characterisation of either side's actions; the official names for these events differ in Russia and Ukraine, and the page does not choose between them. Mentioning an organisation does not imply endorsement of its position; the legal status of organisations under particular countries' laws is noted where required.</span>
+</footer>
 
 <script>
 (function(){
-  // scenarios: A dirty freeze, B formal freeze (Korea), C long war / escalation, D peace treaty
+  // scenarios: A dirty freeze, B formal freeze (Korea), C continued war / escalation, D peace treaty. `en` = English display strings; keys and weights are language-independent
   const SC = [
-    {k:'A', name:'Заморозка без соглашения', desc:'Стрельба стихает по линии фронта, но ничего не подписано: ни границ, ни гарантий. Приднестровский вариант с постоянным риском рецидива.', base:38},
-    {k:'B', name:'Заморозка по соглашению', desc:'Зафиксированная линия, полоса разведения, гарантии Украине, статус территорий не признан. Корейский вариант.', base:32},
-    {k:'C', name:'Продолжение войны', desc:'Боевые действия не прекращаются на всём горизонте барометра — до конца 2027 года и дальше, с растущим риском втягивания НАТО.', base:24},
-    {k:'D', name:'Мирный договор', desc:'Полноценное соглашение: границы и статус закреплены юридически — на чьих бы условиях оно ни было. Требует перелома: военного, политического или внутреннего кризиса у одной из сторон.', base:6}
+    {k:'A', name:'Заморозка без соглашения', desc:'Стрельба стихает по линии фронта, но ничего не подписано: ни границ, ни гарантий. Приднестровский вариант с постоянным риском рецидива.', base:38, en:{name:'Freeze without agreement', desc:'The shooting dies down along the front line, but nothing is signed: no borders, no guarantees. The Transnistria pattern, with a constant risk of relapse.'}},
+    {k:'B', name:'Заморозка по соглашению', desc:'Зафиксированная линия, полоса разведения, гарантии Украине, статус территорий не признан. Корейский вариант.', base:32, en:{name:'Freeze by agreement', desc:'A fixed line, a separation zone, guarantees for Ukraine, the status of territories not recognised. The Korean pattern.'}},
+    {k:'C', name:'Продолжение войны', desc:'Боевые действия не прекращаются на всём горизонте барометра — до конца 2027 года и дальше, с растущим риском втягивания НАТО.', base:24, en:{name:'Continued war', desc:'Hostilities do not stop across the barometer\'s whole horizon — through the end of 2027 and beyond, with a growing risk of drawing NATO in.'}},
+    {k:'D', name:'Мирный договор', desc:'Полноценное соглашение: границы и статус закреплены юридически — на чьих бы условиях оно ни было. Требует перелома: военного, политического или внутреннего кризиса у одной из сторон.', base:6, en:{name:'Peace treaty', desc:'A full agreement: borders and status fixed in law, on whatever terms. Requires a turning point: a military, political or domestic crisis on one side.'}}
   ];
   const GROUPS = {
-    'К заморозке':'Сигналы, что стороны готовы остановиться без победы.',
-    'К продолжению войны':'Сигналы, что стороны и их союзники рассчитывают на годы, а не на сделку.',
-    'К эскалации с НАТО':'Сигналы риска прямого столкновения с альянсом. Питают флаг НАТО.',
-    'К договору':'Сигналы, что появляется политическая возможность для полноценного соглашения, включая внутренний кризис у одной из сторон.'
+    'К заморозке':{ru:'Сигналы, что стороны готовы остановиться без победы.', en:'Signals that the sides are ready to stop without victory.', name_en:'Toward a freeze'},
+    'К продолжению войны':{ru:'Сигналы, что стороны и их союзники рассчитывают на годы, а не на сделку.', en:'Signals that the sides and their allies are planning for years, not for a deal.', name_en:'Toward continued war'},
+    'К эскалации с НАТО':{ru:'Сигналы риска прямого столкновения с альянсом. Питают флаг НАТО.', en:'Signals of the risk of a direct clash with the alliance. They feed the NATO flag.', name_en:'Toward escalation with NATO'},
+    'К договору':{ru:'Сигналы, что появляется политическая возможность для полноценного соглашения, включая внутренний кризис у одной из сторон.', en:'Signals that a political opening for a full agreement is emerging, including a domestic crisis on one side.', name_en:'Toward a treaty'}
   };
-  // effect = log-odds shift at "да"; "частично" gives half
+  // effect = log-odds shift at "да"; "частично" gives half. One indicator per line — scripts/apply_seed.py counts lines starting with {n:'
   const IND = [
-    {n:'Переговоры', g:'К заморозке', t:'Переговоры продолжаются: прошёл второй и третий раунд', s:'сам факт продолжения важнее содержания', e:{A:.3,B:.6,C:-.5,D:.3}, side:-1},
-    {n:'Территориальные уступки', g:'К заморозке', t:'Снято предусловие: Россия не требует оставшуюся часть Донбасса, или Киев не повторяет «ни метра»', s:'любой из двух сдвигов', e:{A:.1,B:.9,C:-.6,D:.6}, side:-1},
-    {n:'Перемирия', g:'К заморозке', t:'Частичные перемирия реально соблюдаются', s:'энергетика, море, локальные зоны; обмены пленными сами по себе не считаются — они идут всегда', e:{A:.6,B:.5,C:-.4,D:.2}, side:-1},
-    {n:'Гарантии безопасности для Украины', g:'К заморозке', t:'Гарантии безопасности обсуждаются в конкретике', s:'кто стоит на линии, кто платит, что при нарушении; сюда же — присутствие иностранных сил, если оно согласовано обеими сторонами', e:{A:-.2,B:1,C:-.5,D:.5}, side:-1},
-    {n:'Экономика России', g:'К заморозке', t:'Пять измеримых признаков истощения', s:'1) Urals ниже цены отсечения $50 два месяца подряд; 2) дефицит федерального бюджета превышает годовой план более чем в 1,5 раза; 3) ликвидная часть ФНБ ниже 2 трлн ₽; 4) введены новые налоги или повышены ставки; 5) рост ВВП не выше нуля или ЦБ снова поднимает ключевую ставку. «Да» — три и больше, «частично» — один-два', e:{A:.4,B:.4,C:-.5,D:.3}, side:-1},
-    {n:'Выплаты российским военным', g:'К заморозке', t:'Регионы России сокращают или переносят выплаты семьям погибших и контрактникам', s:'цена войны упирается в бюджет; сами потери не считаются — они совместимы и с наступлением', e:{A:.3,B:.3,C:-.4,D:.3}, side:-1},
-    {n:'Санкции и давление США', g:'К заморозке', t:'США давят на Москву делом, не словами', s:'новые санкции, вторичные пошлины покупателям нефти, дипломатическое давление; поставки оружия считаются отдельно, в «Поставках оружия Украине»; давление на Киев (ультиматумы, отключение Starlink) = «нет»', e:{A:.2,B:.6,C:-.5,D:.3}, side:-1},
-    {n:'Позиция Китая', g:'К заморозке', t:'Пекин переходит от нейтральных формул к действиям в пользу остановки', s:'«частично» — официальные шаги сверх дежурных формул: участие в посредническом формате, публичный призыв к перемирию на конкретных условиях, объявленные ограничения экспорта двойного назначения или закупок; «да» — Китай публично входит в формат гарантий или вводит ощутимые официально объявленные ограничения; «нет» — поддержка без условий. Единственный внешний актор с реальным рычагом на Москву; только по официальным источникам КНР, России и агентствам', e:{A:.2,B:.5,C:-.5,D:.3}, side:-1},
-    {n:'Меры снижения риска НАТО–Россия', g:'К заморозке', t:'Восстанавливаются каналы связи и договорённости об инцидентах между Россией и НАТО', s:'«частично» — возобновлённые контакты военных, уведомления об учениях, переговоры о контроле над вооружениями после New START, согласованные протоколы инцидентов на море и в воздухе; «да» — подписанные договорённости или работающий постоянный канал; «нет» — каналы заморожены. Единственный индикатор, который снижает флаг НАТО: он снимает «случайную» ветвь эскалации', e:{A:.1,B:.2,C:-.2,D:.1}, side:-1, nato:-.6},
-    {n:'Мобилизационные меры', g:'К продолжению войны', t:'Стороны перестраивают армии под длительные действия', s:'в России — мобилизация, рост выплат контрактникам, новые рода войск и командования, расширение производства; в Украине — ужесточение мобилизации и расширение призывного возраста', e:{A:-.3,B:-.4,C:.9,D:-.4}, side:1},
-    {n:'Застой на фронте', g:'К продолжению войны', t:'Линия фронта почти не движется', s:'«да» — сдвиг меньше ~100 км² в месяц в обе стороны несколько месяцев подряд по геолоцированным данным (ISW); «нет» — заметный сдвиг в любую сторону. Исследования окончания войн: застой продлевает войну, а новые результаты на поле боя сближают оценки сторон и ускоряют сделку', e:{A:.1,B:-.3,C:.6,D:-.3}, side:1},
-    {n:'Поставки оружия Украине', g:'К продолжению войны', t:'США фактически вышли, Европа не закрывает дыру', s:'ПВО и деньги; только фактические поставки и их финансирование, санкционное давление считается отдельно', e:{A:.2,B:-.5,C:.8,D:-.3}, side:1},
-    {n:'Удары по энергетике', g:'К продолжению войны', t:'Удары по энергетике зимой усиливаются — с обеих сторон', s:'Украина — по данным Минэнерго Украины и Укрэнерго; Россия — по официальным сообщениям Минэнерго РФ и регионов об НПЗ и энергообъектах. Расчёт на принуждение, не на переговоры', e:{A:0,B:-.2,C:.4,D:0}, side:1},
-    {n:'Заявления о новых целях', g:'К продолжению войны', t:'Риторика расширяется: Одесса, Харьков, «вся Новороссия»', s:'учитываются только публичные заявления; действия считаются в других индикаторах, поэтому вес вдвое ниже', e:{A:0,B:-.2,C:.35,D:-.2}, side:1},
-    {n:'СЗЧ и мобилизация в Украине', g:'К продолжению войны', t:'Рост случаев самовольного оставления части (СЗЧ), трудности мобилизации в Украине', s:'слабеющий тыл продлевает войну и ухудшает условия сделки', e:{A:.4,B:-.3,C:.4,D:.1}, side:1},
-    {n:'Деньги Европы для Украины', g:'К продолжению войны', t:'Европа отказывается финансировать Украину', s:'не «спорит о сумме», а не даёт', e:{A:.3,B:-.5,C:.6,D:.2}, side:1},
-    {n:'Баланс сил по тренду', g:'К продолжению войны', t:'Соотношение сил меняется в пользу одной стороны', s:'квартальный тренд, не недельный: производство дронов и снарядов, набор против потерь, поставки. «Да» — одна сторона явно наращивает перевес и ждёт улучшения позиции, ей незачем договариваться; «нет» — паритет или обе буксуют. По Вернер именно сдвиг соотношения сил чаще всего ломает перемирия', e:{A:-.1,B:-.4,C:.6,D:0}, side:1},
-    {n:'Обстановка на Балтике', g:'К эскалации с НАТО', t:'Инциденты над Польшей и Балтией регулярнее, Россия их не отрицает', s:'', e:{A:0,B:-.2,C:.5,D:0}, side:1, nato:1},
-    {n:'Обстановка в Чёрном море', g:'К эскалации с НАТО', t:'Чёрное море: удары по судам у Румынии и Болгарии с жертвами', s:'порог — погибшие в территориальных водах НАТО или запрос статьи 4', e:{A:0,B:-.15,C:.4,D:0}, side:1, nato:.8},
-    {n:'Военные учения и ядерные сигналы', g:'К эскалации с НАТО', t:'Учения и ядерные сигналы выходят из рутины', s:'внезапные ядерные учения, испытания и объявление боевого дежурства новых систем, перемещение боеголовок, изменение доктрины, возобновление ядерных испытаний, войска не возвращаются после учений, отмены без объяснений. Плановые учения = «нет». Считается также ядерный фон за пределами этой войны: «да» — ядерное испытание или применение ядерного оружия любой ядерной державой на любом театре; «частично» — официальные (не анонимные) заявления ядерной державы о ядерном варианте на внешнем театре', e:{B:-.15,C:.3}, side:1, nato:.6},
-    {n:'Европейские войска в Украине', g:'К эскалации с НАТО', t:'Европейские контингенты движутся к вводу в Украину', s:'«частично» — учения по переброске, повышение боеготовности, подписанные рамочные соглашения; «да» — названы даты ввода или контингент входит до перемирия, согласованного обеими сторонами. Россия официально заявляет, что будет рассматривать такие войска как военные цели, поэтому индикатор учитывается как риск столкновения, а не как сигнал к сделке. Присутствие иностранных сил, согласованное обеими сторонами, засчитывается в «Гарантиях безопасности»', e:{A:-.1,B:-.15,C:.4,D:-.1}, side:1, nato:1},
-    {n:'Калининград и Сувалкский коридор', g:'К эскалации с НАТО', t:'Обстановка вокруг Калининградской области и Сувалкского коридора обостряется', s:'«частично» — новые ограничения транзита, закрытые переходы, официальные заявления об ответных мерах, внеплановые учения в области, у коридора или на белорусской стороне; «да» — остановка транзита, официально объявленное усиление группировки, инциденты с применением оружия на границе, внеплановое развёртывание НАТО в коридоре. По официальным сообщениям Литвы, Польши, России и Беларуси', e:{A:0,B:-.2,C:.5,D:0}, side:1, nato:1},
-    {n:'Гибридные действия в Европе', g:'К эскалации с НАТО', t:'Правительства стран НАТО официально фиксируют гибридные действия и называют источник', s:'«частично» — официальная атрибуция инцидентов (дроны у аэропортов, диверсии, кабели, кибератаки) правительствами или спецслужбами, рост зафиксированных случаев по официальной статистике; «да» — инцидент с жертвами или крупным ущербом с официальной атрибуцией, либо коллективный ответ уровня статьи 4. Отрицание обвиняемой стороны фиксируется как её позиция', e:{A:0,B:-.15,C:.5,D:0}, side:1, nato:.8},
-    {n:'Перестановки во власти', g:'К договору', t:'Крупные кадровые изменения или публичные разногласия в руководстве сторон', s:'уровень министра обороны, начальника Генштаба, Совета безопасности / СНБО, спецслужб; публичные конфликты внутри руководства в Москве или Киеве. Оперативные перестановки в войсках не считаются', e:{A:0,B:.3,C:-.3,D:1}, side:-1},
-    {n:'Выборы в Украине', g:'К договору', t:'Украина готовит выборы или референдум по условиям', s:'значит, условия уже есть', e:{A:0,B:.5,C:-.5,D:1}, side:-1},
-    {n:'Публичный график лидеров', g:'К договору', t:'Проверяемые перерывы в публичной работе глав государств: отсутствие дольше двух недель, отменённые визиты и мероприятия', s:'по официальным графикам kremlin.ru и president.gov.ua; слухи и предположения не считаются; смена руководства у любой из сторон исторически — самый частый путь к полноценному договору', e:{A:0,B:.3,C:-.3,D:.8}, side:-1},
-    {n:'Коалиция за остановку', g:'К договору', t:'Внутри обеих стран растёт коалиция за прекращение войны', s:'опросы (в России — ВЦИОМ и ФОМ; в Украине — КМИС) и публичные голоса из околовластных кругов: бизнес, губернаторы, военные блогеры. По Стэнли и Гоэмансу войны заканчиваются сдвигом внутренней коалиции, а не только усталостью', e:{A:.2,B:.4,C:-.4,D:.5}, side:-1}
+    {n:'Переговоры', g:'К заморозке', t:'Переговоры продолжаются: прошёл второй и третий раунд', s:'сам факт продолжения важнее содержания', e:{A:.3,B:.6,C:-.5,D:.3}, side:-1, en:{n:'Negotiations', t:'Talks continue: a second and third round have taken place', s:'the fact of continuation matters more than the content'}},
+    {n:'Территориальные уступки', g:'К заморозке', t:'Снято предусловие: Россия не требует оставшуюся часть Донбасса, или Киев не повторяет «ни метра»', s:'любой из двух сдвигов', e:{A:.1,B:.9,C:-.6,D:.6}, side:-1, en:{n:'Territorial concessions', t:'A precondition is dropped: Russia no longer demands the remaining part of Donbas, or Kyiv stops repeating "not one metre"', s:'either of the two shifts'}},
+    {n:'Перемирия', g:'К заморозке', t:'Частичные перемирия реально соблюдаются', s:'энергетика, море, локальные зоны; обмены пленными сами по себе не считаются — они идут всегда', e:{A:.6,B:.5,C:-.4,D:.2}, side:-1, en:{n:'Ceasefires', t:'Partial ceasefires are actually observed', s:'energy, sea, local zones; prisoner exchanges on their own do not count — they happen regardless'}},
+    {n:'Гарантии безопасности для Украины', g:'К заморозке', t:'Гарантии безопасности обсуждаются в конкретике', s:'кто стоит на линии, кто платит, что при нарушении; сюда же — присутствие иностранных сил, если оно согласовано обеими сторонами', e:{A:-.2,B:1,C:-.5,D:.5}, side:-1, en:{n:'Security guarantees for Ukraine', t:'Security guarantees are discussed in specifics', s:'who stands on the line, who pays, what happens on violation; also a foreign-force presence, if agreed by both sides'}},
+    {n:'Экономика России', g:'К заморозке', t:'Пять измеримых признаков истощения', s:'1) Urals ниже цены отсечения $50 два месяца подряд; 2) дефицит федерального бюджета превышает годовой план более чем в 1,5 раза; 3) ликвидная часть ФНБ ниже 2 трлн ₽; 4) введены новые налоги или повышены ставки; 5) рост ВВП не выше нуля или ЦБ снова поднимает ключевую ставку. «Да» — три и больше, «частично» — один-два', e:{A:.4,B:.4,C:-.5,D:.3}, side:-1, en:{n:'Russia\'s economy', t:'Five measurable signs of strain', s:'1) Urals below the $50 budget cut-off price for two months running; 2) the federal deficit exceeds the annual plan by more than 1.5×; 3) the liquid part of the National Wealth Fund below 2 trillion ₽; 4) new taxes or higher rates introduced; 5) GDP growth at or below zero, or the central bank raises its key rate again. "Yes" — three or more, "partly" — one or two'}},
+    {n:'Выплаты российским военным', g:'К заморозке', t:'Регионы России сокращают или переносят выплаты семьям погибших и контрактникам', s:'цена войны упирается в бюджет; сами потери не считаются — они совместимы и с наступлением', e:{A:.3,B:.3,C:-.4,D:.3}, side:-1, en:{n:'Payments to Russian servicemen', t:'Russian regions cut or postpone payments to bereaved families and contract soldiers', s:'the cost of war hits the budget; casualties themselves do not count — they are compatible with an offensive too'}},
+    {n:'Санкции и давление США', g:'К заморозке', t:'США давят на Москву делом, не словами', s:'новые санкции, вторичные пошлины покупателям нефти, дипломатическое давление; поставки оружия считаются отдельно, в «Поставках оружия Украине»; давление на Киев (ультиматумы, отключение Starlink) = «нет»', e:{A:.2,B:.6,C:-.5,D:.3}, side:-1, en:{n:'US sanctions and pressure', t:'The US presses Moscow with deeds, not words', s:'new sanctions, secondary tariffs on oil buyers, diplomatic pressure; arms deliveries are counted separately under "Arms deliveries to Ukraine"; pressure on Kyiv (ultimatums, Starlink cut-offs) = "no"'}},
+    {n:'Позиция Китая', g:'К заморозке', t:'Пекин переходит от нейтральных формул к действиям в пользу остановки', s:'«частично» — официальные шаги сверх дежурных формул: участие в посредническом формате, публичный призыв к перемирию на конкретных условиях, объявленные ограничения экспорта двойного назначения или закупок; «да» — Китай публично входит в формат гарантий или вводит ощутимые официально объявленные ограничения; «нет» — поддержка без условий. Единственный внешний актор с реальным рычагом на Москву; только по официальным источникам КНР, России и агентствам', e:{A:.2,B:.5,C:-.5,D:.3}, side:-1, en:{n:'China\'s position', t:'Beijing moves from neutral formulas to actions in favour of a halt', s:'"partly" — official steps beyond stock phrases: joining a mediation format, a public call for a ceasefire on specific terms, announced restrictions on dual-use exports or purchases; "yes" — China publicly joins a guarantee format or imposes tangible, officially announced restrictions; "no" — support without conditions. The only external actor with real leverage on Moscow; official Chinese and Russian sources and agencies only'}},
+    {n:'Меры снижения риска НАТО–Россия', g:'К заморозке', t:'Восстанавливаются каналы связи и договорённости об инцидентах между Россией и НАТО', s:'«частично» — возобновлённые контакты военных, уведомления об учениях, переговоры о контроле над вооружениями после New START, согласованные протоколы инцидентов на море и в воздухе; «да» — подписанные договорённости или работающий постоянный канал; «нет» — каналы заморожены. Единственный индикатор, который снижает флаг НАТО: он снимает «случайную» ветвь эскалации', e:{A:.1,B:.2,C:-.2,D:.1}, side:-1, nato:-.6, en:{n:'NATO–Russia risk-reduction measures', t:'Communication channels and incident agreements between Russia and NATO are being restored', s:'"partly" — resumed military-to-military contacts, exercise notifications, arms-control talks after New START, agreed protocols for incidents at sea and in the air; "yes" — signed agreements or a working permanent channel; "no" — channels frozen. The only indicator that lowers the NATO flag: it removes the "accidental" branch of escalation'}},
+    {n:'Мобилизационные меры', g:'К продолжению войны', t:'Стороны перестраивают армии под длительные действия', s:'в России — мобилизация, рост выплат контрактникам, новые рода войск и командования, расширение производства; в Украине — ужесточение мобилизации и расширение призывного возраста', e:{A:-.3,B:-.4,C:.9,D:-.4}, side:1, en:{n:'Mobilisation measures', t:'The sides restructure their armies for prolonged operations', s:'in Russia — mobilisation, higher payments to contract soldiers, new service branches and commands, expanded production; in Ukraine — tighter mobilisation and a wider draft age'}},
+    {n:'Застой на фронте', g:'К продолжению войны', t:'Линия фронта почти не движется', s:'«да» — сдвиг меньше ~100 км² в месяц в обе стороны несколько месяцев подряд по геолоцированным данным (ISW); «нет» — заметный сдвиг в любую сторону. Исследования окончания войн: застой продлевает войну, а новые результаты на поле боя сближают оценки сторон и ускоряют сделку', e:{A:.1,B:-.3,C:.6,D:-.3}, side:1, en:{n:'Front-line stalemate', t:'The front line barely moves', s:'"yes" — a shift of less than ~100 km² a month in either direction for several months running, by geolocated data (ISW); "no" — a noticeable shift either way. War-termination research: stalemate prolongs war, while new battlefield results bring the sides\' estimates closer and speed up a deal'}},
+    {n:'Поставки оружия Украине', g:'К продолжению войны', t:'США фактически вышли, Европа не закрывает дыру', s:'ПВО и деньги; только фактические поставки и их финансирование, санкционное давление считается отдельно', e:{A:.2,B:-.5,C:.8,D:-.3}, side:1, en:{n:'Arms deliveries to Ukraine', t:'The US has effectively stepped back and Europe is not closing the gap', s:'air defence and money; only actual deliveries and their financing, sanctions pressure is counted separately'}},
+    {n:'Удары по энергетике', g:'К продолжению войны', t:'Удары по энергетике зимой усиливаются — с обеих сторон', s:'Украина — по данным Минэнерго Украины и Укрэнерго; Россия — по официальным сообщениям Минэнерго РФ и регионов об НПЗ и энергообъектах. Расчёт на принуждение, не на переговоры', e:{A:0,B:-.2,C:.4,D:0}, side:1, en:{n:'Strikes on energy', t:'Winter strikes on energy intensify — on both sides', s:'Ukraine — per the Ukrainian Ministry of Energy and Ukrenergo; Russia — per official reports by the Russian Ministry of Energy and regions on refineries and power facilities. A bet on coercion, not on talks'}},
+    {n:'Заявления о новых целях', g:'К продолжению войны', t:'Риторика расширяется: Одесса, Харьков, «вся Новороссия»', s:'учитываются только публичные заявления; действия считаются в других индикаторах, поэтому вес вдвое ниже', e:{A:0,B:-.2,C:.35,D:-.2}, side:1, en:{n:'Statements of new objectives', t:'Rhetoric expands: Odesa, Kharkiv, "all of Novorossiya"', s:'only public statements count; actions are counted in other indicators, so the weight is halved'}},
+    {n:'СЗЧ и мобилизация в Украине', g:'К продолжению войны', t:'Рост случаев самовольного оставления части (СЗЧ), трудности мобилизации в Украине', s:'слабеющий тыл продлевает войну и ухудшает условия сделки', e:{A:.4,B:-.3,C:.4,D:.1}, side:1, en:{n:'AWOL and mobilisation in Ukraine', t:'Rising cases of unauthorised absence (AWOL) and mobilisation difficulties in Ukraine', s:'a weakening rear prolongs the war and worsens the terms of a deal'}},
+    {n:'Деньги Европы для Украины', g:'К продолжению войны', t:'Европа отказывается финансировать Украину', s:'не «спорит о сумме», а не даёт', e:{A:.3,B:-.5,C:.6,D:.2}, side:1, en:{n:'European money for Ukraine', t:'Europe refuses to fund Ukraine', s:'not "arguing about the amount" but not giving'}},
+    {n:'Баланс сил по тренду', g:'К продолжению войны', t:'Соотношение сил меняется в пользу одной стороны', s:'квартальный тренд, не недельный: производство дронов и снарядов, набор против потерь, поставки. «Да» — одна сторона явно наращивает перевес и ждёт улучшения позиции, ей незачем договариваться; «нет» — паритет или обе буксуют. По Вернер именно сдвиг соотношения сил чаще всего ломает перемирия', e:{A:-.1,B:-.4,C:.6,D:0}, side:1, en:{n:'Balance of forces by trend', t:'The balance of forces shifts in favour of one side', s:'a quarterly trend, not a weekly one: drone and shell production, recruitment versus losses, deliveries. "Yes" — one side is clearly building an advantage and expects a better position, so has no reason to negotiate; "no" — parity, or both are stuck. By Werner, it is a shift in the balance of forces that most often breaks ceasefires'}},
+    {n:'Обстановка на Балтике', g:'К эскалации с НАТО', t:'Инциденты над Польшей и Балтией регулярнее, Россия их не отрицает', s:'', e:{A:0,B:-.2,C:.5,D:0}, side:1, nato:1, en:{n:'The Baltic', t:'Incidents over Poland and the Baltic states become more regular and Russia does not deny them', s:''}},
+    {n:'Обстановка в Чёрном море', g:'К эскалации с НАТО', t:'Чёрное море: удары по судам у Румынии и Болгарии с жертвами', s:'порог — погибшие в территориальных водах НАТО или запрос статьи 4', e:{A:0,B:-.15,C:.4,D:0}, side:1, nato:.8, en:{n:'The Black Sea', t:'Black Sea: strikes on ships off Romania and Bulgaria with casualties', s:'threshold — deaths in NATO territorial waters or an Article 4 request'}},
+    {n:'Военные учения и ядерные сигналы', g:'К эскалации с НАТО', t:'Учения и ядерные сигналы выходят из рутины', s:'внезапные ядерные учения, испытания и объявление боевого дежурства новых систем, перемещение боеголовок, изменение доктрины, возобновление ядерных испытаний, войска не возвращаются после учений, отмены без объяснений. Плановые учения = «нет». Считается также ядерный фон за пределами этой войны: «да» — ядерное испытание или применение ядерного оружия любой ядерной державой на любом театре; «частично» — официальные (не анонимные) заявления ядерной державы о ядерном варианте на внешнем театре', e:{B:-.15,C:.3}, side:1, nato:.6, en:{n:'Military exercises and nuclear signalling', t:'Exercises and nuclear signalling depart from routine', s:'snap nuclear exercises, tests and the declared combat duty of new systems, warhead movements, doctrine changes, resumed nuclear testing, troops not returning after exercises, unexplained cancellations. Scheduled exercises = "no". The nuclear background beyond this war also counts: "yes" — a nuclear test or use of nuclear weapons by any nuclear power in any theatre; "partly" — official (not anonymous) statements by a nuclear power about a nuclear option in an external theatre'}},
+    {n:'Европейские войска в Украине', g:'К эскалации с НАТО', t:'Европейские контингенты движутся к вводу в Украину', s:'«частично» — учения по переброске, повышение боеготовности, подписанные рамочные соглашения; «да» — названы даты ввода или контингент входит до перемирия, согласованного обеими сторонами. Россия официально заявляет, что будет рассматривать такие войска как военные цели, поэтому индикатор учитывается как риск столкновения, а не как сигнал к сделке. Присутствие иностранных сил, согласованное обеими сторонами, засчитывается в «Гарантиях безопасности»', e:{A:-.1,B:-.15,C:.4,D:-.1}, side:1, nato:1, en:{n:'European troops in Ukraine', t:'European contingents move toward deployment in Ukraine', s:'"partly" — deployment exercises, raised readiness, signed framework agreements; "yes" — deployment dates are named, or a contingent enters before a ceasefire agreed by both sides. Russia officially states it will treat such troops as military targets, so the indicator counts as a clash risk, not as a signal toward a deal. A foreign-force presence agreed by both sides is counted under "Security guarantees"'}},
+    {n:'Калининград и Сувалкский коридор', g:'К эскалации с НАТО', t:'Обстановка вокруг Калининградской области и Сувалкского коридора обостряется', s:'«частично» — новые ограничения транзита, закрытые переходы, официальные заявления об ответных мерах, внеплановые учения в области, у коридора или на белорусской стороне; «да» — остановка транзита, официально объявленное усиление группировки, инциденты с применением оружия на границе, внеплановое развёртывание НАТО в коридоре. По официальным сообщениям Литвы, Польши, России и Беларуси', e:{A:0,B:-.2,C:.5,D:0}, side:1, nato:1, en:{n:'Kaliningrad and the Suwałki corridor', t:'The situation around Kaliningrad region and the Suwałki corridor sharpens', s:'"partly" — new transit restrictions, closed crossings, official statements on countermeasures, unscheduled exercises in the region, near the corridor or on the Belarusian side; "yes" — transit halted, an officially announced force build-up, incidents with weapons used at the border, unscheduled NATO deployment in the corridor. Per official reports from Lithuania, Poland, Russia and Belarus'}},
+    {n:'Гибридные действия в Европе', g:'К эскалации с НАТО', t:'Правительства стран НАТО официально фиксируют гибридные действия и называют источник', s:'«частично» — официальная атрибуция инцидентов (дроны у аэропортов, диверсии, кабели, кибератаки) правительствами или спецслужбами, рост зафиксированных случаев по официальной статистике; «да» — инцидент с жертвами или крупным ущербом с официальной атрибуцией, либо коллективный ответ уровня статьи 4. Отрицание обвиняемой стороны фиксируется как её позиция', e:{A:0,B:-.15,C:.5,D:0}, side:1, nato:.8, en:{n:'Hybrid actions in Europe', t:'NATO governments officially record hybrid actions and name the source', s:'"partly" — official attribution of incidents (drones near airports, sabotage, cables, cyberattacks) by governments or security services, a rise in recorded cases in official statistics; "yes" — an incident with casualties or major damage with official attribution, or a collective response at Article 4 level. The accused side\'s denial is recorded as its position'}},
+    {n:'Перестановки во власти', g:'К договору', t:'Крупные кадровые изменения или публичные разногласия в руководстве сторон', s:'уровень министра обороны, начальника Генштаба, Совета безопасности / СНБО, спецслужб; публичные конфликты внутри руководства в Москве или Киеве. Оперативные перестановки в войсках не считаются', e:{A:0,B:.3,C:-.3,D:1}, side:-1, en:{n:'Leadership changes', t:'Major personnel changes or public rifts in either side\'s leadership', s:'at the level of defence minister, chief of the general staff, Security Council / NSDC, security services; public conflicts within the leadership in Moscow or Kyiv. Operational reshuffles in the troops do not count'}},
+    {n:'Выборы в Украине', g:'К договору', t:'Украина готовит выборы или референдум по условиям', s:'значит, условия уже есть', e:{A:0,B:.5,C:-.5,D:1}, side:-1, en:{n:'Elections in Ukraine', t:'Ukraine prepares elections or a referendum on the terms', s:'which means the terms already exist'}},
+    {n:'Публичный график лидеров', g:'К договору', t:'Проверяемые перерывы в публичной работе глав государств: отсутствие дольше двух недель, отменённые визиты и мероприятия', s:'по официальным графикам kremlin.ru и president.gov.ua; слухи и предположения не считаются; смена руководства у любой из сторон исторически — самый частый путь к полноценному договору', e:{A:0,B:.3,C:-.3,D:.8}, side:-1, en:{n:'Leaders\' public schedules', t:'Verifiable gaps in the heads of state\'s public activity: absence longer than two weeks, cancelled visits and events', s:'per the official schedules on kremlin.ru and president.gov.ua; rumours and speculation do not count; historically, a change of leadership on either side is the most common path to a full treaty'}},
+    {n:'Коалиция за остановку', g:'К договору', t:'Внутри обеих стран растёт коалиция за прекращение войны', s:'опросы (в России — ВЦИОМ и ФОМ; в Украине — КМИС) и публичные голоса из околовластных кругов: бизнес, губернаторы, военные блогеры. По Стэнли и Гоэмансу войны заканчиваются сдвигом внутренней коалиции, а не только усталостью', e:{A:.2,B:.4,C:-.4,D:.5}, side:-1, en:{n:'Coalition for stopping', t:'A coalition for ending the war grows inside both countries', s:'polls (Russia — VCIOM and FOM; Ukraine — KIIS) and public voices from circles close to power: business, governors, military bloggers. By Stanley and Goemans, wars end through a shift in the domestic coalition, not through fatigue alone'}}
   ];
   // SEED: оценка Claude; при публикации новой оценки меняется только этот блок
   const SEED = {
@@ -391,6 +443,18 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
   }
   function persist(){ try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){} }
 
+  // ---- language: 'ru' | 'en'. Stored per browser; default follows the browser language. Evidence notes stay in Russian.
+  const LANGKEY='wb-lang';
+  let LANG='ru';
+  try{ const sv=localStorage.getItem(LANGKEY); LANG = (sv==='en'||sv==='ru') ? sv : ((navigator.language||'').toLowerCase().startsWith('ru')?'ru':'en'); }catch(e){}
+  const en=()=>LANG==='en';
+  const L=(ru,e)=>en()?e:ru;
+  const SN=s=>en()?s.en.name:s.name, SD=s=>en()?s.en.desc:s.desc;
+  const IN=x=>en()?x.en.n:x.n, IT=x=>en()?x.en.t:x.t, IS=x=>en()?x.en.s:x.s;
+  const GN=g=>en()?GROUPS[g].name_en:g, GD=g=>en()?GROUPS[g].en:GROUPS[g].ru;
+  const lc=s=>s.charAt(0).toLowerCase()+s.slice(1);
+  const PILL=()=>en()?['No','Partly','Yes']:['Нет','Частично','Да'];
+
   function compute(vals){
     const lo = {}; SC.forEach(s=>lo[s.k]=Math.log(s.base/100));
     let warSig=0, dealSig=0, warMax=0, dealMax=0, nato=0, natoMax=0, any=false, natoYes=false;
@@ -410,39 +474,41 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
     return {probs, needle, natoLvl, natoOn, any};
   }
   const fmt = d => d.split('-').reverse().join('.');
-  function isoWeek(x){ const d=new Date(Date.UTC(x.getFullYear(),x.getMonth(),x.getDate())); const day=d.getUTCDay()||7; d.setUTCDate(d.getUTCDate()+4-day); const y0=new Date(Date.UTC(d.getUTCFullYear(),0,1)); return Math.ceil(((d-y0)/864e5+1)/7); }
-  // next assessment: the first Monday after the seed date (weekly update cadence)
+  // next assessment: the first Tuesday after the seed date (weekly update cadence)
   function nextDate(d){ const x=new Date(d+'T12:00:00'); for(let i=0;i<8;i++){ x.setDate(x.getDate()+1); if(x.getDay()===2) break; } return fmt(x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')); }
+  const natoWordOf = nl => nl===0?L('нет','none'):(nl<34?L('низкий','low'):(nl<67?L('средний','medium'):L('высокий','high')));
 
   const $=id=>document.getElementById(id);
-  $('seed-date').textContent=fmt(SEED.date); $('next-date').textContent='около '+nextDate(SEED.date);
 
-  // indicators (read + edit markup in one row)
-  const indEl=$('inds'); let curG=null, gWrap=null;
-  IND.forEach((ind,i)=>{
-    if(ind.g!==curG){
-      curG=ind.g;
-      const head=document.createElement('div'); head.className='group-head';
-      head.innerHTML='<h3>'+curG+'</h3><span class="dir">'+(ind.side>0?'тянет стрелку вправо':'тянет стрелку влево')+'</span>';
-      indEl.appendChild(head);
-      const gd=document.createElement('p'); gd.className='group-desc'; gd.textContent=GROUPS[curG]||''; indEl.appendChild(gd);
-      gWrap=document.createElement('div'); indEl.appendChild(gWrap);
-    }
-    const row=document.createElement('div'); row.className='ind';
-    row.innerHTML='<span class="pill" id="pill-'+i+'"></span>'+
-      '<div class="t"><b class="nm">'+ind.n+'</b><span class="full">'+ind.t+(ind.s?' — '+ind.s:'')+'</span></div>'+
-      '<div class="ev ro-only" id="ev-'+i+'"></div>'+
-      '<div class="seg edit-only" role="group" aria-label="Оценка">'+
-        [['Нет',0],['Частично',1],['Да',2]].map(o=>'<button type="button" data-i="'+i+'" data-v="'+o[1]+'">'+o[0]+'</button>').join('')+
-      '</div>'+
-      '<input class="note edit-only" id="note-'+i+'" placeholder="Основание: что именно произошло, дата, источник">';
-    gWrap.appendChild(row);
-  });
-  const PILL=['Нет','Частично','Да'];
+  // indicators (read + edit markup in one row); rebuilt on language change
+  const indEl=$('inds');
+  function buildInds(){
+    indEl.innerHTML=''; let curG=null, gWrap=null;
+    IND.forEach((ind,i)=>{
+      if(ind.g!==curG){
+        curG=ind.g;
+        const head=document.createElement('div'); head.className='group-head';
+        head.innerHTML='<h3>'+GN(curG)+'</h3><span class="dir">'+(ind.side>0?L('тянет стрелку вправо','pulls the needle right'):L('тянет стрелку влево','pulls the needle left'))+'</span>';
+        indEl.appendChild(head);
+        const gd=document.createElement('p'); gd.className='group-desc'; gd.textContent=GD(curG)||''; indEl.appendChild(gd);
+        gWrap=document.createElement('div'); indEl.appendChild(gWrap);
+      }
+      const row=document.createElement('div'); row.className='ind';
+      row.innerHTML='<span class="pill" id="pill-'+i+'"></span>'+
+        '<div class="t"><b class="nm">'+IN(ind)+'</b><span class="full">'+IT(ind)+(IS(ind)?' — '+IS(ind):'')+'</span></div>'+
+        '<div class="ev ro-only" id="ev-'+i+'"></div>'+
+        '<div class="seg edit-only" role="group" aria-label="'+L('Оценка','Rating')+'">'+
+          PILL().map((o,v)=>'<button type="button" data-i="'+i+'" data-v="'+v+'">'+o+'</button>').join('')+
+        '</div>'+
+        '<input class="note edit-only" id="note-'+i+'" placeholder="'+L('Основание: что именно произошло, дата, источник','Evidence: what exactly happened, date, source')+'">';
+      gWrap.appendChild(row);
+    });
+  }
   function paintInds(){
+    const P=PILL();
     IND.forEach((ind,i)=>{
       const v=state.vals[i];
-      const p=$('pill-'+i); p.textContent=PILL[v]; p.className='pill v'+v;
+      const p=$('pill-'+i); p.textContent=P[v]; p.className='pill v'+v;
       $('ev-'+i).textContent=state.notes[i]||'';
       $('note-'+i).value=state.notes[i]||'';
       document.querySelectorAll('button[data-i="'+i+'"]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.v===v)));
@@ -456,18 +522,16 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
     const n=e.target.closest('.note'); if(!n) return;
     const i=+n.id.slice(5); state.notes[i]=n.value; $('ev-'+i).textContent=n.value; persist();
   });
-  $('toggle-edit').addEventListener('click',()=>{
-    const on=document.body.classList.toggle('editing');
-    $('toggle-edit').textContent=on?'Готово':'Проверить свои отметки';
-  });
+  function editLabel(){ const on=document.body.classList.contains('editing'); $('toggle-edit').textContent=on?L('Готово','Done'):L('Проверить свои отметки','Try your own ratings'); }
+  $('toggle-edit').addEventListener('click',()=>{ document.body.classList.toggle('editing'); editLabel(); });
 
   // scenarios
   function renderScen(r){
     const el=$('scen'); el.innerHTML='';
     SC.slice().sort((a,b)=>r.probs[b.k]-r.probs[a.k]).forEach(s=>{
       const d=document.createElement('div'); d.className='sc '+s.k;
-      d.innerHTML='<span class="mark"></span><div class="nm">'+s.name+'</div><div class="pct">'+r.probs[s.k]+'%</div>'+
-        '<div class="ds">'+s.desc+'</div><div class="base">база '+s.base+'%</div>'+
+      d.innerHTML='<span class="mark"></span><div class="nm">'+SN(s)+'</div><div class="pct">'+r.probs[s.k]+'%</div>'+
+        '<div class="ds">'+SD(s)+'</div><div class="base">'+L('база','base')+' '+s.base+'%</div>'+
         '<div class="bar"><i style="width:'+r.probs[s.k]+'%"></i></div>';
       el.appendChild(d);
     });
@@ -476,18 +540,18 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
     const top=SC.slice().sort((a,b)=>r.probs[b.k]-r.probs[a.k]);
     const gap=r.probs[top[0].k]-r.probs[top[1].k];
     let h, sub;
-    if(!r.any){ h='Отметок нет: показаны базовые оценки.'; sub=''; }
-    else if(gap<8){ h=top[0].name+' и '+top[1].name.toLowerCase()+' идут вровень'; }
-    else { h='Лидирует '+top[0].name.toLowerCase(); }
-    const dir = r.needle>15?'Военные сигналы сейчас конкретнее и свежее сделочных.':(r.needle<-15?'Сделочные сигналы сейчас конкретнее и свежее военных.':'Сигналы с обеих сторон примерно уравновешены.');
-    sub = r.any ? (top[0].name+' — '+r.probs[top[0].k]+' %, '+top[1].name.toLowerCase()+' — '+r.probs[top[1].k]+' %. '+dir) : '';
+    if(!r.any){ h=L('Отметок нет: показаны базовые оценки.','No ratings: base estimates shown.'); sub=''; }
+    else if(gap<8){ h=L(SN(top[0])+' и '+lc(SN(top[1]))+' идут вровень', SN(top[0])+' and '+lc(SN(top[1]))+' are neck and neck'); }
+    else { h=L('Лидирует '+lc(SN(top[0])), SN(top[0])+' leads'); }
+    const dir = r.needle>15?L('Военные сигналы сейчас конкретнее и свежее сделочных.','War signals are currently more concrete and more recent than deal signals.'):(r.needle<-15?L('Сделочные сигналы сейчас конкретнее и свежее военных.','Deal signals are currently more concrete and more recent than war signals.'):L('Сигналы с обеих сторон примерно уравновешены.','Signals on both sides are roughly balanced.'));
+    sub = r.any ? (SN(top[0])+' — '+r.probs[top[0].k]+' %, '+lc(SN(top[1]))+' — '+r.probs[top[1].k]+' %. '+dir) : '';
     $('headline').textContent=h; $('headline-sub').textContent=sub;
     const isSeed = state.vals.length===SEED.vals.length && state.vals.every((v,i)=>v===SEED.vals[i]);
-    $('v-title').textContent = isSeed ? 'Показание на '+fmt(SEED.date) : 'Ваш расчёт · опубликованная оценка от '+fmt(SEED.date);
+    $('v-title').textContent = isSeed ? L('Показание на ','Reading as of ')+fmt(SEED.date) : L('Ваш расчёт · опубликованная оценка от ','Your calculation · published assessment of ')+fmt(SEED.date);
     const tiles=$('tiles'); tiles.innerHTML='';
     top.slice(0,3).forEach(s=>{
       const t=document.createElement('div'); t.className='tile';
-      t.innerHTML='<div class="stripe" style="background:var(--sc'+s.k+')"></div><div class="pct">'+r.probs[s.k]+'<span style="font-size:20px">%</span></div><div class="nm">'+s.name+'</div>';
+      t.innerHTML='<div class="stripe" style="background:var(--sc'+s.k+')"></div><div class="pct">'+r.probs[s.k]+'<span style="font-size:20px">%</span></div><div class="nm">'+SN(s)+'</div>';
       tiles.appendChild(t);
     });
     $('needle').style.left=(50+r.needle/2)+'%';
@@ -495,60 +559,70 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
     const nl=Math.round(r.natoLvl*100);
     $('nato-needle').style.left=nl+'%';
     $('nato-val').firstChild.textContent=nl+' ';
-    const natoWord = nl===0?'нет':(nl<34?'низкий':(nl<67?'средний':'высокий'));
-    $('nato-word').textContent=natoWord;
+    $('nato-word').textContent=natoWordOf(nl);
     // trend vs previous published assessment (official history only, not personal snapshots)
     const oh=SEED.hist.slice().sort((a,b)=>a.d<b.d?-1:1);
     const prev=oh.length>=2?compute(oh[oh.length-2].v):null; const prevD=oh.length>=2?fmt(oh[oh.length-2].d):'';
-    const trend=(el,cur,pv,unit)=>{ el.className='trend'; if(pv===null){ el.textContent='первая оценка'; return; } const d=cur-pv; if(Math.abs(d)<3){ el.textContent='→ без изменений с '+prevD; } else { el.classList.add(d>0?'up':'down'); el.textContent=(d>0?'↑ +':'↓ −')+Math.abs(d)+unit+' с '+prevD; } };
+    const trend=(el,cur,pv,unit)=>{ el.className='trend'; if(pv===null){ el.textContent=L('первая оценка','first assessment'); return; } const d=cur-pv; if(Math.abs(d)<3){ el.textContent=L('→ без изменений с ','→ unchanged since ')+prevD; } else { el.classList.add(d>0?'up':'down'); el.textContent=(d>0?'↑ +':'↓ −')+Math.abs(d)+unit+L(' с ',' since ')+prevD; } };
     trend($('needle-trend'), r.needle, prev?prev.needle:null, '');
     trend($('nato-trend'), nl, prev?Math.round(prev.natoLvl*100):null, '');
     const nato=$('nato'); nato.classList.toggle('on',r.natoOn); nato.classList.toggle('warn',r.natoLvl>0&&!r.natoOn);
-    $('nato-text').textContent = r.natoOn ? 'Флаг горит: хотя бы один из шести сигналов перешёл в «да», и их сумма выше середины шкалы.' :
-      (r.natoLvl>0 ? 'Флаг не горит: сигналы есть (Балтика, Калининград, гибридные действия, учения), но ни один не перешёл в «да».' : 'Сигналов нет.');
+    $('nato-text').textContent = r.natoOn ? L('Флаг горит: хотя бы один из шести сигналов перешёл в «да», и их сумма выше середины шкалы.','Flag on: at least one of the six signals has moved to "yes" and their sum is above the middle of the scale.') :
+      (r.natoLvl>0 ? L('Флаг не горит: сигналы есть (Балтика, Калининград, гибридные действия, учения), но ни один не перешёл в «да».','Flag off: there are signals (the Baltic, Kaliningrad, hybrid actions, exercises), but none has moved to "yes".') : L('Сигналов нет.','No signals.'));
   }
   function renderHist(){
     const el=$('hist');
-    if(!state.hist.length){ el.innerHTML='<p class="empty">Снимков ещё нет.</p>'; return; }
+    if(!state.hist.length){ el.innerHTML='<p class="empty">'+L('Снимков ещё нет.','No snapshots yet.')+'</p>'; return; }
     const h=document.createElement('div'); h.className='hist';
     state.hist.slice().reverse().slice(0,12).forEach(s=>{
       const c = s.p ? {probs:s.p, needle:s.n} : compute(s.v); // seed entries may carry only v
       const top=SC.slice().sort((a,b)=>c.probs[b.k]-c.probs[a.k])[0];
-      const nl=(s.v?compute(s.v):c).natoLvl; h.innerHTML+='<span class="d">'+fmt(s.d)+'</span><span class="mini"><i style="left:'+(50+c.needle/2)+'%"></i></span><span class="lead-s">'+top.name+' '+c.probs[top.k]+'%</span><span class="nato-s">НАТО '+(nl===undefined?'—':Math.round(nl*100))+'</span>';
+      const nl=(s.v?compute(s.v):c).natoLvl; h.innerHTML+='<span class="d">'+fmt(s.d)+'</span><span class="mini"><i style="left:'+(50+c.needle/2)+'%"></i></span><span class="lead-s">'+SN(top)+' '+c.probs[top.k]+'%</span><span class="nato-s">'+L('НАТО','NATO')+' '+(nl===undefined?'—':Math.round(nl*100))+'</span>';
     });
     el.innerHTML=''; el.appendChild(h);
   }
   function byName(n){ return IND.findIndex(x=>x.n===n); }
   function renderAnalysis(r){
     const el=$('analysis'); el.innerHTML='';
-    const groups={}; IND.forEach((ind,i)=>{ (groups[ind.g]=groups[ind.g]||{sum:0,max:0,yes:[]}); groups[ind.g].sum+=state.vals[i]; groups[ind.g].max+=2; if(state.vals[i]===2) groups[ind.g].yes.push(ind.n); });
-    let h='<h3>Сила групп</h3>';
+    const P=PILL();
+    const groups={}; IND.forEach((ind,i)=>{ (groups[ind.g]=groups[ind.g]||{sum:0,max:0,yes:[]}); groups[ind.g].sum+=state.vals[i]; groups[ind.g].max+=2; if(state.vals[i]===2) groups[ind.g].yes.push(IN(ind)); });
+    let h='<h3>'+L('Сила групп','Group strength')+'</h3>';
     for(const g in groups){ const q=groups[g]; const pct=Math.round(q.sum/q.max*100);
-      h+='<div class="grp"><span>'+g+'</span><span class="num">'+q.sum+' из '+q.max+' · '+pct+'%</span><div class="gb"><i style="width:'+pct+'%"></i></div></div>'; }
-    const yes=IND.filter((x,i)=>state.vals[i]===2).map(x=>x.n);
-    h+='<p><b>Сработали полностью:</b> '+(yes.length?yes.join(', '):'ни один индикатор')+'.</p>';
+      h+='<div class="grp"><span>'+GN(g)+'</span><span class="num">'+q.sum+L(' из ',' of ')+q.max+' · '+pct+'%</span><div class="gb"><i style="width:'+pct+'%"></i></div></div>'; }
+    const yes=IND.filter((x,i)=>state.vals[i]===2).map(x=>IN(x));
+    h+='<p><b>'+L('Сработали полностью:','Fully triggered:')+'</b> '+(yes.length?yes.join(', '):L('ни один индикатор','no indicator'))+'.</p>';
     // change since previous snapshot
     const hs=state.hist.slice().sort((a,b)=>a.d<b.d?-1:1);
     if(hs.length>=2){ const prev=hs[hs.length-2], cur=hs[hs.length-1]; const pr=compute(prev.v), cr=compute(cur.v);
-      const ch=[]; IND.forEach((x,i)=>{ if(prev.v[i]!==cur.v[i]) ch.push(x.n+': '+PILL[prev.v[i]].toLowerCase()+' → '+PILL[cur.v[i]].toLowerCase()); });
-      h+='<h3>Что изменилось с '+fmt(prev.d)+'</h3><p>Стрелка '+(pr.needle>0?'+':'')+pr.needle+' → '+(cr.needle>0?'+':'')+cr.needle+'; риск столкновения с НАТО '+Math.round(pr.natoLvl*100)+' → '+Math.round(cr.natoLvl*100)+'. '+(ch.length?'Сменили значение: ':'Отметки не менялись.')+'</p>'+(ch.length?'<ul><li>'+ch.join('</li><li>')+'</li></ul>':'');
-    } else { h+='<h3>Динамика</h3><p>Это первая оценка; сравнение появится после следующей.</p>'; }
+      const ch=[]; IND.forEach((x,i)=>{ if(prev.v[i]!==cur.v[i]) ch.push(IN(x)+': '+P[prev.v[i]].toLowerCase()+' → '+P[cur.v[i]].toLowerCase()); });
+      h+='<h3>'+L('Что изменилось с ','What changed since ')+fmt(prev.d)+'</h3><p>'+L('Стрелка ','Needle ')+(pr.needle>0?'+':'')+pr.needle+' → '+(cr.needle>0?'+':'')+cr.needle+'; '+L('риск столкновения с НАТО ','NATO-clash risk ')+Math.round(pr.natoLvl*100)+' → '+Math.round(cr.natoLvl*100)+'. '+(ch.length?L('Сменили значение: ','Changed value: '):L('Отметки не менялись.','No ratings changed.'))+'</p>'+(ch.length?'<ul><li>'+ch.join('</li><li>')+'</li></ul>':'');
+    } else { h+='<h3>'+L('Динамика','Trend')+'</h3><p>'+L('Это первая оценка; сравнение появится после следующей.','This is the first assessment; a comparison will appear after the next one.')+'</p>'; }
     // theory lenses
     const v=i=>state.vals[i];
     const deal=IND.reduce((a,x,i)=>a+(x.side<0?v(i):0),0)/(2*IND.filter(x=>x.side<0).length);
     const war=IND.reduce((a,x,i)=>a+(x.side>0?v(i):0),0)/(2*IND.filter(x=>x.side>0).length);
-    const L=[];
-    L.push('<b>Созревание (Zartman).</b> Сделочные сигналы заполнены на '+Math.round(deal*100)+'%, военные — на '+Math.round(war*100)+'%. '+(deal<0.35?'Взаимно болезненного тупика в восприятии сторон пока не видно: стороны не считают, что проигрывают от продолжения.':(deal<0.6?'Признаки взаимной усталости есть, но «выход» ещё не оформлен.':'Обе стороны ищут выход — момент близок к зрелому.')));
+    const Ls=[];
+    Ls.push('<b>'+L('Созревание (Zartman).','Ripeness (Zartman).')+'</b> '+L('Сделочные сигналы заполнены на '+Math.round(deal*100)+'%, военные — на '+Math.round(war*100)+'%. ','Deal signals are '+Math.round(deal*100)+'% filled, war signals '+Math.round(war*100)+'%. ')+(deal<0.35?L('Взаимно болезненного тупика в восприятии сторон пока не видно: стороны не считают, что проигрывают от продолжения.','No mutually hurting stalemate is visible in the sides\' perception yet: neither believes it loses by continuing.'):(deal<0.6?L('Признаки взаимной усталости есть, но «выход» ещё не оформлен.','There are signs of mutual fatigue, but the "way out" has not taken shape yet.'):L('Обе стороны ищут выход — момент близок к зрелому.','Both sides are looking for a way out — the moment is close to ripe.'))));
     const st=v(byName('Застой на фронте'));
-    L.push('<b>Информация с поля боя (Reiter).</b> '+(st===2?'Фронт статичен: ни одна сторона не получает новых данных о своих шансах, и это продлевает войну сильнее, чем движение в любую сторону.':(st===1?'Фронт движется слабо; заметного сдвига, который сблизил бы оценки сторон, нет.':'Линия заметно движется — по данным о войнах такие сдвиги чаще ведут к переговорам, чем застой.')));
+    Ls.push('<b>'+L('Информация с поля боя (Reiter).','Battlefield information (Reiter).')+'</b> '+(st===2?L('Фронт статичен: ни одна сторона не получает новых данных о своих шансах, и это продлевает войну сильнее, чем движение в любую сторону.','The front is static: neither side receives new information about its chances, and this prolongs the war more than movement in either direction would.'):(st===1?L('Фронт движется слабо; заметного сдвига, который сблизил бы оценки сторон, нет.','The front moves slightly; there is no noticeable shift that would bring the sides\' estimates closer.'):L('Линия заметно движется — по данным о войнах такие сдвиги чаще ведут к переговорам, чем застой.','The line is moving noticeably — in the data on wars, such shifts lead to talks more often than stalemate does.'))));
     const gu=v(byName('Гарантии безопасности для Украины')), tr=v(byName('Европейские войска в Украине')), us=v(byName('Санкции и давление США'));
-    L.push('<b>Прочность будущего перемирия (Fortna, Werner).</b> '+(gu>=1?'Каркас для заморозки по соглашению обсуждается':'Каркас для заморозки по соглашению не обсуждается')+(tr===0?', без дат и гарантий исполнения':(tr===1?'; европейское присутствие пока готовится без согласия другой стороны':'; даты ввода европейских войск названы без согласия другой стороны — это риск срыва, а не прочности'))+'. '+(us===0?'Давление посредника направлено на Киев, а не на Москву: перемирие, продавленное извне без демилитаризованной зоны и гарантий, по данным исследований срывается чаще.':'Посредник давит на обе стороны — это повышает шансы на устойчивое перемирие.'));
+    Ls.push('<b>'+L('Прочность будущего перемирия (Fortna, Werner).','Durability of a future ceasefire (Fortna, Werner).')+'</b> '+(gu>=1?L('Каркас для заморозки по соглашению обсуждается','A framework for a freeze by agreement is being discussed'):L('Каркас для заморозки по соглашению не обсуждается','No framework for a freeze by agreement is being discussed'))+(tr===0?L(', без дат и гарантий исполнения',', with no dates and no enforcement guarantees'):(tr===1?L('; европейское присутствие пока готовится без согласия другой стороны','; a European presence is being prepared without the other side\'s consent'):L('; даты ввода европейских войск названы без согласия другой стороны — это риск срыва, а не прочности','; deployment dates for European troops have been named without the other side\'s consent — a risk of breakdown, not of durability')))+'. '+(us===0?L('Давление посредника направлено на Киев, а не на Москву: перемирие, продавленное извне без демилитаризованной зоны и гарантий, по данным исследований срывается чаще.','The mediator\'s pressure is aimed at Kyiv, not Moscow: a ceasefire pushed from outside without a demilitarised zone and guarantees breaks down more often, according to the research.'):L('Посредник давит на обе стороны — это повышает шансы на устойчивое перемирие.','The mediator presses both sides — this raises the chances of a durable ceasefire.')));
     const co=v(byName('Коалиция за остановку')), elit=v(byName('Перестановки во власти'));
-    L.push('<b>Внутренняя коалиция (Stanley, Goemans).</b> '+(co===0?'Запроса на остановку не видно ни в обществе, ни в элитах.':(co===1?'Общественный запрос на остановку есть с обеих сторон, но элитной коалиции, которой выгодно остановиться, пока нет':'Коалиция за остановку сложилась'))+(elit>=1?'; при этом в руководстве одной из сторон идут перестановки, которые могут ускорить сдвиг.':'.'));
-    h+='<h3>Через теории окончания войн</h3><p>'+L.join('</p><p>')+'</p>';
+    Ls.push('<b>'+L('Внутренняя коалиция (Stanley, Goemans).','Domestic coalition (Stanley, Goemans).')+'</b> '+(co===0?L('Запроса на остановку не видно ни в обществе, ни в элитах.','No demand for stopping is visible in society or among elites.'):(co===1?L('Общественный запрос на остановку есть с обеих сторон, но элитной коалиции, которой выгодно остановиться, пока нет','There is public demand for stopping on both sides, but no elite coalition that would benefit from stopping yet'):L('Коалиция за остановку сложилась','A coalition for stopping has formed')))+(elit>=1?L('; при этом в руководстве одной из сторон идут перестановки, которые могут ускорить сдвиг.','; meanwhile, leadership changes on one side could accelerate the shift.'):'.'));
+    h+='<h3>'+L('Через теории окончания войн','Through theories of war termination')+'</h3><p>'+Ls.join('</p><p>')+'</p>';
     el.innerHTML=h;
   }
   function render(){ const r=compute(state.vals); renderVerdict(r); renderScen(r); renderHist(); renderAnalysis(r); }
+
+  function applyLang(){
+    document.documentElement.lang=LANG;
+    document.body.classList.toggle('lang-en',en()); document.body.classList.toggle('lang-ru',!en());
+    document.title=L('Барометр войны','War Barometer');
+    document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===LANG)));
+    $('seed-date').textContent=fmt(SEED.date); $('next-date').textContent=L('около ','around ')+nextDate(SEED.date);
+    buildInds(); paintInds(); editLabel(); render();
+  }
+  document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>{ LANG=b.dataset.lang; try{localStorage.setItem(LANGKEY,LANG);}catch(e){} applyLang(); }));
 
   // snapshot controls (edit mode)
   function today(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -558,28 +632,28 @@ footer{margin-top:28px;padding-top:14px;border-top:2px solid var(--ink);font-siz
     state.hist=state.hist.filter(x=>x.d!==d);
     state.hist.push({d, n:r.needle, p:r.probs, v:state.vals.slice()});
     state.hist.sort((a,b)=>a.d<b.d?-1:1); if(state.hist.length>40) state.hist=state.hist.slice(-40);
-    persist(); renderHist(); $('msg').textContent='Снимок за '+fmt(d)+' сохранён в этом браузере.';
+    persist(); renderHist(); $('msg').textContent=L('Снимок за '+fmt(d)+' сохранён в этом браузере.','Snapshot for '+fmt(d)+' saved in this browser.');
   });
   $('reset').addEventListener('click',()=>{
     state.vals=SEED.vals.slice(); state.notes=SEED.notes.slice(); persist(); paintInds(); render();
-    $('msg').textContent='Возвращена опубликованная оценка от '+fmt(SEED.date)+'.';
+    $('msg').textContent=L('Возвращена опубликованная оценка от ','Restored the published assessment of ')+fmt(SEED.date)+'.';
   });
   $('copy').addEventListener('click',()=>{
-    const r=compute(state.vals);
-    const lines=['Барометр войны, '+fmt($('date').value||today()),
-      'Стрелка: '+(r.needle>0?'+':'')+r.needle+' (−100 сделка … +100 война)',
-      ...SC.slice().sort((a,b)=>r.probs[b.k]-r.probs[a.k]).map(s=>s.name+': '+r.probs[s.k]+'% (база '+s.base+'%)'),
-      'Риск столкновения с НАТО: '+Math.round(r.natoLvl*100)+' из 100 ('+(r.natoLvl===0?'нет':(r.natoLvl<.34?'низкий':(r.natoLvl<.67?'средний':'высокий')))+') — флаг '+(r.natoOn?'горит':(r.natoLvl>0?'сигналы':'нет')),
-      '', 'Отмечено:',
-      ...IND.map((ind,i)=>state.vals[i]? '- '+(state.vals[i]===2?'[да] ':'[частично] ')+ind.n+' ('+ind.t+')'+(state.notes[i]?' — '+state.notes[i]:'') : null).filter(Boolean)
+    const r=compute(state.vals); const P=PILL();
+    const lines=[L('Барометр войны, ','War Barometer, ')+fmt($('date').value||today()),
+      L('Стрелка: ','Needle: ')+(r.needle>0?'+':'')+r.needle+L(' (−100 сделка … +100 война)',' (−100 deal … +100 war)'),
+      ...SC.slice().sort((a,b)=>r.probs[b.k]-r.probs[a.k]).map(s=>SN(s)+': '+r.probs[s.k]+'% ('+L('база','base')+' '+s.base+'%)'),
+      L('Риск столкновения с НАТО: ','NATO-clash risk: ')+Math.round(r.natoLvl*100)+L(' из 100 (',' of 100 (')+natoWordOf(Math.round(r.natoLvl*100))+') — '+L('флаг ','flag ')+(r.natoOn?L('горит','on'):(r.natoLvl>0?L('сигналы','signals'):L('нет','off'))),
+      '', L('Отмечено:','Rated:'),
+      ...IND.map((ind,i)=>state.vals[i]? '- ['+P[state.vals[i]].toLowerCase()+'] '+IN(ind)+' ('+IT(ind)+')'+(state.notes[i]?' — '+state.notes[i]:'') : null).filter(Boolean)
     ];
     const txt=lines.join('\n');
-    const ok=()=>{$('msg').textContent='Сводка скопирована.';};
-    const fail=()=>{$('msg').textContent='Копирование недоступно; выдели текст ниже вручную.'; const ta=document.createElement('textarea'); ta.className='note'; ta.rows=8; ta.value=txt; ta.style.marginTop='8px'; $('msg').after(ta);};
+    const ok=()=>{$('msg').textContent=L('Сводка скопирована.','Summary copied.');};
+    const fail=()=>{$('msg').textContent=L('Копирование недоступно; выдели текст ниже вручную.','Clipboard unavailable; select the text below manually.'); const ta=document.createElement('textarea'); ta.className='note'; ta.rows=8; ta.value=txt; ta.style.marginTop='8px'; $('msg').after(ta);};
     try{ navigator.clipboard.writeText(txt).then(ok,fail); }catch(e){ fail(); }
   });
 
-  paintInds(); render();
+  applyLang();
 })();
 </script>
 </body>
